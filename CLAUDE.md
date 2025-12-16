@@ -1,6 +1,34 @@
 # Claude Code 工作模式指南
 
+> ⚠️ **重要**: 這是 Claude Code 的核心工作指南。在開始任何工作前，請先閱讀此文件。
+
 本文件定義 Claude Code 在 KoreKore 專案中的工作模式與原則。
+
+---
+
+## 🚀 快速開始（給 AI Agents）
+
+### 必讀文件（按順序）
+
+1. 📘 **本文件 (CLAUDE.md)** - 工作模式與原則
+2. 🤖 **`.ai/README.md`** - AI Agent 通用指南
+3. 🚫 **`.ai/rules.md`** - 必須遵守的規則（強制性）
+4. 📁 **`docs/adr/README.md`** - 已做出的技術決策
+5. 🧪 **`TESTING.md`** - 測試指南
+
+### 驗證你是否遵守規則
+
+```bash
+npm run validate
+```
+
+這會執行：
+- TypeScript 型別檢查
+- ESLint 代碼風格檢查
+- 所有測試
+- 建置驗證
+
+---
 
 ## 角色定位 (Role)
 
