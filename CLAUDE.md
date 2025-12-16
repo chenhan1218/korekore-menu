@@ -1,6 +1,7 @@
 # Claude Code 工作模式指南
 
-> ⚠️ **重要**: 這是 Claude Code 的核心工作指南。在開始任何工作前，請先閱讀此文件。
+> ⚠️ **重要**: 這是 Claude Code 的核心工作指南。
+> 💡 **首次使用？** 先讀 `.ai/QUICKSTART.md`（500 tokens，快速上手）
 
 本文件定義 Claude Code 在 KoreKore 專案中的工作模式與原則。
 
@@ -8,13 +9,36 @@
 
 ## 🚀 快速開始（給 AI Agents）
 
-### 必讀文件（按順序）
+### 🎯 Token 優化策略
 
-1. 📘 **本文件 (CLAUDE.md)** - 工作模式與原則
-2. 🤖 **`.ai/README.md`** - AI Agent 通用指南
-3. 🚫 **`.ai/rules.md`** - 必須遵守的規則（強制性）
-4. 📁 **`docs/adr/README.md`** - 已做出的技術決策
-5. 🧪 **`TESTING.md`** - 測試指南
+**首次使用**：
+```bash
+cat .ai/QUICKSTART.md    # 500 tokens - 快速上手
+```
+
+**開發新功能**：
+```bash
+cat .ai/QUICKSTART.md              # 500 tokens
+cat .ai/prompts/new-feature.md     # 1,000 tokens
+# 總計: 1,500 tokens ✅（節省 95%）
+```
+
+**深入了解**（可選）：
+```bash
+cat CLAUDE.md            # 5,400 tokens - 完整指南
+cat .ai/INDEX.md         # 查看文件索引
+```
+
+### 必讀文件（按優先級）
+
+| 優先級 | 文件 | Token | 說明 |
+|--------|------|-------|------|
+| 🔴 必讀 | `.ai/QUICKSTART.md` | 500 | 核心規則精簡版 |
+| 🟡 按需 | `.ai/prompts/*.md` | 1,000 | 開發流程指南 |
+| 🟡 按需 | `docs/adr/*.md` | 1,500 | 技術決策記錄 |
+| 🟢 參考 | 本文件 (CLAUDE.md) | 5,400 | 完整工作模式 |
+| 🟢 參考 | `.ai/README.md` | 7,100 | 詳細指南 |
+| 🟢 參考 | `.ai/rules.md` | 9,200 | 完整規則集 |
 
 ### 驗證你是否遵守規則
 

@@ -4,6 +4,18 @@
 
 協助台灣旅客在國外旅遊餐廳點餐的 Web App 工具。
 
+---
+
+## 🤖 給 AI Agents
+
+**首次使用？先讀這個** → [`.ai/QUICKSTART.md`](.ai/QUICKSTART.md) (500 tokens)
+
+**需要更多資訊？** → [`.ai/INDEX.md`](.ai/INDEX.md) (查看文件索引)
+
+**Gemini CLI？** → [`.ai/GEMINI-QUICKSTART.md`](.ai/GEMINI-QUICKSTART.md) (800 tokens)
+
+---
+
 ## 📱 核心功能
 
 - **菜單掃描**: 上傳/拍攝菜單圖片
