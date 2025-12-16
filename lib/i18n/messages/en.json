@@ -1,0 +1,79 @@
+{
+  "common": {
+    "appName": "KoreKore",
+    "loading": "Loading...",
+    "error": "Error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next"
+  },
+  "nav": {
+    "home": "Home",
+    "history": "History",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Scan Menu",
+    "subtitle": "Don't speak Japanese? Just point.",
+    "uploadButton": "Upload Menu Photo",
+    "scanButton": "Start Scanning",
+    "dragAndDrop": "Drag and drop an image here, or click to upload",
+    "recentMenus": "Recently Scanned Menus"
+  },
+  "menu": {
+    "title": "Menu Items",
+    "selectItems": "Select items you want to order",
+    "noItems": "No menu items parsed yet",
+    "selected": "{count} selected",
+    "generateOrder": "Generate Order Card",
+    "price": "Price",
+    "item": "Item"
+  },
+  "orderCard": {
+    "title": "Order Card",
+    "subtitle": "Please show this screen to the staff",
+    "greeting": "Excuse me,",
+    "orderText": "I'd like to order these items.",
+    "thankYou": "Thank you.",
+    "share": "Share",
+    "copy": "Copy Text",
+    "copied": "Copied to clipboard"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No scan history yet",
+    "deleteConfirm": "Are you sure you want to delete this record?",
+    "deleteSuccess": "Successfully deleted",
+    "scannedAt": "Scanned at"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signInWithGoogle": "Sign in with Google",
+    "continueAsGuest": "Continue as Guest",
+    "guestMode": "Guest Mode",
+    "signInBenefit": "Sign in to access your history across devices"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "account": "Account",
+    "about": "About"
+  },
+  "errors": {
+    "uploadFailed": "Upload failed",
+    "parseFailed": "Parse failed",
+    "networkError": "Network error",
+    "unauthorized": "Unauthorized",
+    "unknown": "Unknown error"
+  }
+}
