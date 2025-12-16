@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+/* Tailwind CSS v4 變數設定 */
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #09090b;
+  --color-card: #ffffff;
+  --color-card-foreground: #09090b;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #09090b;
+  --color-primary: #18181b;
+  --color-primary-foreground: #fafafa;
+  --color-secondary: #f4f4f5;
+  --color-secondary-foreground: #18181b;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-accent: #f4f4f5;
+  --color-accent-foreground: #18181b;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fafafa;
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #18181b;
+
+  --radius: 0.5rem;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: #09090b;
+    --color-foreground: #fafafa;
+    --color-card: #09090b;
+    --color-card-foreground: #fafafa;
+    --color-popover: #09090b;
+    --color-popover-foreground: #fafafa;
+    --color-primary: #fafafa;
+    --color-primary-foreground: #18181b;
+    --color-secondary: #27272a;
+    --color-secondary-foreground: #fafafa;
+    --color-muted: #27272a;
+    --color-muted-foreground: #a1a1aa;
+    --color-accent: #27272a;
+    --color-accent-foreground: #fafafa;
+    --color-destructive: #7f1d1d;
+    --color-destructive-foreground: #fafafa;
+    --color-border: #27272a;
+    --color-input: #27272a;
+    --color-ring: #d4d4d8;
+  }
+}
+
+/* 自訂樣式 */
+@layer utilities {
+  .text-xl-mobile {
+    @apply text-xl md:text-2xl;
+  }
+
+  .text-2xl-mobile {
+    @apply text-2xl md:text-3xl;
+  }
+
+  .text-3xl-mobile {
+    @apply text-3xl md:text-4xl;
+  }
+
+  .order-card-text {
+    @apply text-4xl md:text-5xl font-bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

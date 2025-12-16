@@ -1,0 +1,79 @@
+{
+  "common": {
+    "appName": "KoreKore",
+    "loading": "載入中...",
+    "error": "發生錯誤",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "確認",
+    "delete": "刪除",
+    "save": "儲存",
+    "close": "關閉",
+    "back": "返回",
+    "next": "下一步"
+  },
+  "nav": {
+    "home": "首頁",
+    "history": "歷史記錄",
+    "settings": "設定"
+  },
+  "home": {
+    "title": "掃描菜單",
+    "subtitle": "不會日文？只要拍照就好",
+    "uploadButton": "上傳菜單照片",
+    "scanButton": "開始掃描",
+    "dragAndDrop": "拖曳圖片到這裡，或點擊上傳",
+    "recentMenus": "最近掃描的菜單"
+  },
+  "menu": {
+    "title": "菜單內容",
+    "selectItems": "選擇想點的餐點",
+    "noItems": "尚未解析出菜單項目",
+    "selected": "已選擇 {count} 項",
+    "generateOrder": "生成點餐卡",
+    "price": "價格",
+    "item": "項目"
+  },
+  "orderCard": {
+    "title": "點餐卡",
+    "subtitle": "請將此畫面出示給店員",
+    "greeting": "すみません、",
+    "orderText": "これとこれをください。",
+    "thankYou": "ありがとうございます。",
+    "share": "分享",
+    "copy": "複製文字",
+    "copied": "已複製到剪貼簿"
+  },
+  "history": {
+    "title": "歷史記錄",
+    "empty": "尚無掃描記錄",
+    "deleteConfirm": "確定要刪除這筆記錄嗎？",
+    "deleteSuccess": "已成功刪除",
+    "scannedAt": "掃描於"
+  },
+  "auth": {
+    "signIn": "登入",
+    "signOut": "登出",
+    "signInWithGoogle": "使用 Google 登入",
+    "continueAsGuest": "以訪客身份繼續",
+    "guestMode": "訪客模式",
+    "signInBenefit": "登入後可在不同裝置查看歷史記錄"
+  },
+  "settings": {
+    "title": "設定",
+    "language": "語言",
+    "theme": "主題",
+    "themeLight": "淺色",
+    "themeDark": "深色",
+    "themeSystem": "跟隨系統",
+    "account": "帳號",
+    "about": "關於"
+  },
+  "errors": {
+    "uploadFailed": "上傳失敗",
+    "parseFailed": "解析失敗",
+    "networkError": "網路連線錯誤",
+    "unauthorized": "未授權",
+    "unknown": "未知錯誤"
+  }
+}
