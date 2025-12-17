@@ -1,9 +1,29 @@
+"use client";
+
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload } from "lucide-react";
+import { MenuUpload } from "@/components/menu";
+import { Card, CardContent } from "@/components/ui/card";
+import type { MenuDocument } from "@/types/menu";
 
 export default function HomePage() {
+  const t = useTranslations();
+  const [uploadedMenu, setUploadedMenu] = useState<
+    Omit<MenuDocument, "id" | "menuItems"> | null
+  >(null);
+
+  /**
+   * 處理上傳成功
+   * 接收臨時菜單物件，後續將呼叫 Gemini API 進行解析
+   */
+  const handleUploadSuccess = (
+    tempMenu: Omit<MenuDocument, "id" | "menuItems">
+  ) => {
+    setUploadedMenu(tempMenu);
+    // TODO: 呼叫 Gemini API 解析菜單
+    console.log("上傳成功，準備進行 AI 解析:", tempMenu);
+  };
+
   return (
     <main className="container mx-auto px-4 py-8 safe-area-top safe-area-bottom">
       <div className="max-w-2xl mx-auto space-y-8">
@@ -17,31 +37,26 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Upload Card */}
-        <Card className="border-2 border-dashed">
-          <CardHeader>
-            <CardTitle className="text-2xl">掃描菜單</CardTitle>
-            <CardDescription>
-              上傳菜單照片，AI 會自動翻譯並生成點餐卡
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-col items-center justify-center py-12 space-y-4">
-              <Upload className="w-16 h-16 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
-                拖曳圖片到這裡，或點擊上傳
+        {/* Upload Component */}
+        <MenuUpload onUploadSuccess={handleUploadSuccess} />
+
+        {/* Uploaded Menu Status */}
+        {uploadedMenu && (
+          <Card className="border-2 border-green-200 bg-green-50">
+            <CardContent className="p-4">
+              <p className="text-sm font-medium text-green-900">
+                ✅ 菜單已上傳，正在進行 AI 解析...
               </p>
-            </div>
-            <Button size="lg" className="w-full">
-              <Upload className="mr-2 h-5 w-5" />
-              上傳菜單照片
-            </Button>
-          </CardContent>
-        </Card>
+              <p className="text-xs text-green-700 mt-2">
+                圖片 URL: {uploadedMenu.imageUrl.substring(0, 50)}...
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Recent Menus */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">最近掃描的菜單</h2>
+          <h2 className="text-2xl font-semibold">{t("home.recentMenus")}</h2>
           <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
             {/* Placeholder cards */}
             {[1, 2, 3].map((i) => (
@@ -49,7 +64,7 @@ export default function HomePage() {
                 <div className="aspect-square bg-muted" />
                 <CardContent className="p-4">
                   <p className="text-sm text-muted-foreground">
-                    尚無掃描記錄
+                    {t("history.empty")}
                   </p>
                 </CardContent>
               </Card>

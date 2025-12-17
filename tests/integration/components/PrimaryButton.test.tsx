@@ -70,9 +70,9 @@ describe("PrimaryButton 元件", () => {
 
   describe("不同尺寸", () => {
     it.each([
-      ["sm", "small"],
-      ["md", "default"],
-      ["lg", "large"],
+      "sm",
+      "md",
+      "lg",
     ] as const)("應該正確渲染 %s 尺寸", (size) => {
       render(<PrimaryButton size={size}>按鈕</PrimaryButton>);
 

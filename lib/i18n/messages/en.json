@@ -23,7 +23,10 @@
     "uploadButton": "Upload Menu Photo",
     "scanButton": "Start Scanning",
     "dragAndDrop": "Drag and drop an image here, or click to upload",
-    "recentMenus": "Recently Scanned Menus"
+    "recentMenus": "Recently Scanned Menus",
+    "upload_title": "Scan Menu",
+    "upload_description": "Upload a menu photo and AI will automatically translate it and generate an order card",
+    "upload_hint": "Drag and drop an image here, or click to upload"
   },
   "menu": {
     "title": "Menu Items",

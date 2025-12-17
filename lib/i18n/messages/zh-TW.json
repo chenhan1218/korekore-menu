@@ -23,7 +23,10 @@
     "uploadButton": "上傳菜單照片",
     "scanButton": "開始掃描",
     "dragAndDrop": "拖曳圖片到這裡，或點擊上傳",
-    "recentMenus": "最近掃描的菜單"
+    "recentMenus": "最近掃描的菜單",
+    "upload_title": "掃描菜單",
+    "upload_description": "上傳菜單照片，AI 會自動翻譯並生成點餐卡",
+    "upload_hint": "拖曳圖片到這裡，或點擊上傳"
   },
   "menu": {
     "title": "菜單內容",
