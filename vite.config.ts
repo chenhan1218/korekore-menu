@@ -39,7 +39,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-firebase': ['firebase'],
           'vendor-zustand': ['zustand'],
           'vendor-gemini': ['@google/generative-ai'],
         },
@@ -47,6 +46,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'firebase', 'zustand', '@google/generative-ai'],
+    include: ['react', 'react-dom', 'zustand', '@google/generative-ai'],
   },
 })

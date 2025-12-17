@@ -10,7 +10,7 @@
 import { useState, useCallback } from 'react'
 import { createParseMenuImageUseCase } from '@/domain/usecases'
 import { MenuData } from '@/domain/entities'
-import { AppError } from '@/shared/types'
+import { AppError, ErrorCode } from '@/shared/types'
 import { GeminiAdapter } from '@/infrastructure/adapters'
 
 interface UseParseMenuResult {
@@ -65,7 +65,12 @@ export const useParseMenu = (): UseParseMenuResult => {
       } catch (err) {
         const appError = err instanceof AppError
           ? err
-          : new AppError('UNKNOWN_ERROR', String(err), '發生未知錯誤，請重試')
+          : new AppError(
+              ErrorCode.UNKNOWN_ERROR,
+              err instanceof Error ? err.message : String(err),
+              '發生未知錯誤，請重試',
+              true
+            )
 
         setError(appError)
         return null
