@@ -1,14 +1,146 @@
 # 編碼規範與慣例
 
 ## 目錄
+- [架構規範](#架構規範)
 - [通用原則](#通用原則)
 - [檔案與目錄結構](#檔案與目錄結構)
 - [命名慣例](#命名慣例)
 - [TypeScript 規範](#typescript-規範)
+- [Domain 層規範](#domain-層規範)
+- [Infrastructure 層規範](#infrastructure-層規範)
+- [UI 層規範](#ui-層規範)
 - [React 組件規範](#react-組件規範)
 - [錯誤處理](#錯誤處理)
 - [註釋與文檔](#註釋與文檔)
 - [Git Commit 規範](#git-commit-規範)
+
+---
+
+## 架構規範
+
+### 六邊形架構的嚴格遵守
+
+KoreKore 採用六邊形架構（Ports & Adapters），確保框架無關性。請嚴格遵守以下規則：
+
+#### ❌ Domain 層禁止事項
+
+**Domain 層代碼絕對不能：**
+```typescript
+// ❌ 錯誤：Domain 導入 React
+import React from 'react'
+import { useState } from 'react'
+
+// ❌ 錯誤：Domain 導入框架庫
+import { ref } from 'vue'
+import { writable } from 'svelte/store'
+
+// ❌ 錯誤：Domain 導入外部服務 SDK
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import { getFirestore } from 'firebase/firestore'
+
+// ❌ 錯誤：Domain 導入 UI 層
+import { useParseMenu } from '@/ui/react/adapters'
+```
+
+#### ✅ Domain 層允許事項
+
+**Domain 層只能：**
+```typescript
+// ✅ 正確：只依賴 TypeScript 和自身
+import { GeminiPort } from '@/domain/ports'
+import { MenuItem } from '@/domain/entities'
+import { AppError } from '@/shared/types'
+
+// ✅ 正確：定義抽象接口（Ports）
+export interface GeminiPort {
+  parseImage(imageBase64: string): Promise<MenuItem[]>
+}
+
+// ✅ 正確：純業務邏輯
+export const createParseMenuImageUseCase = (geminiPort: GeminiPort) => ({
+  async execute(imageBase64: string) {
+    const items = await geminiPort.parseImage(imageBase64)
+    return items
+  }
+})
+```
+
+#### Infrastructure 層規範
+
+**Infrastructure 層實現 Domain Ports：**
+```typescript
+// ✅ 正確：實現 Port 接口
+import { GeminiPort } from '@/domain/ports'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+
+export class GeminiAdapter implements GeminiPort {
+  async parseImage(imageBase64: string): Promise<MenuItem[]> {
+    // 這裡可以使用任何外部 SDK
+    const genAI = new GoogleGenerativeAI(apiKey)
+    // ...
+  }
+}
+
+// ❌ 錯誤：Infrastructure 不應依賴 UI 層
+import { useState } from 'react'
+```
+
+#### UI 層規範
+
+**UI 層通過 Adapters 使用 Domain：**
+```typescript
+// ✅ 正確：React Hook 包裹 Domain UseCase
+export const useParseMenu = () => {
+  const [loading, setLoading] = useState(false)
+  const useCase = createParseMenuImageUseCase(geminiAdapter)
+
+  const parse = async (imageBase64) => {
+    setLoading(true)
+    return await useCase.execute(imageBase64)  // 調用 Domain 邏輯
+  }
+
+  return { parse, loading }
+}
+
+// ❌ 錯誤：UI 層不應包含業務邏輯
+export const useParseMenu = () => {
+  const parse = async (imageBase64) => {
+    // 業務邏輯應在 Domain 層，不在這裡
+    const validated = validateImage(imageBase64)
+    const processed = processImage(validated)
+    // ...
+  }
+}
+```
+
+### 依賴注入流向
+
+```
+Domain UseCase (純業務邏輯)
+    ↑
+    └─ 接收 Port (接口)
+
+Infrastructure Adapter (實現 Port)
+    ↓
+    └─ 實現具體邏輯
+
+UI Adapter (Hooks / Composables)
+    ↓
+    └─ 包裝 UseCase，提供給 Components
+```
+
+**正確的依賴流：**
+```
+UI Components
+    ↓ (使用)
+UI Adapters (Hooks)
+    ↓ (調用)
+Domain UseCase
+    ↓ (依賴)
+Domain Port (接口)
+    ↑ (實現)
+Infrastructure Adapter
+```
 
 ---
 

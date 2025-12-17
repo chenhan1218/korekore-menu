@@ -417,6 +417,120 @@ TypeScript 的價值在於編譯期間捕捉類型錯誤。寬鬆的配置會削
 
 ---
 
+## ADR-011: 採用六邊形架構 (Hexagonal Architecture) 確保框架可替換性
+
+**狀態：** ✅ 已決策
+
+**日期：** 2025-12-17
+
+### 背景
+為確保 KoreKore 的長期可維護性與未來的 UI 框架可替換性，需要在項目初期建立清晰的分層架構，使業務邏輯完全獨立於 UI 框架。
+
+### 替代方案
+
+| 方案 | 框架耦合度 | 遷移難度 | 代碼複用率 | 適用場景 |
+|------|----------|---------|---------|---------|
+| **六邊形架構** | 低 | 1-3 天 | 80%+ | ✅ 長期項目 |
+| 傳統三層架構 | 中 | 1-2 週 | 60% | 中期項目 |
+| MVC + 服務層 | 中高 | 2-3 週 | 50% | 短期項目 |
+| 無架構 (UI-first) | 高 | 無法遷移 | 0% | 一次性應用 |
+
+### 決策
+✅ **採用六邊形架構 (Ports & Adapters 模式)**
+
+### 理由
+
+1. **框架完全獨立：** Domain 層業務邏輯不依賴任何 UI 框架
+2. **無痛框架遷移：** React → Vue 時，僅需改寫 15-20% 的 UI 層代碼
+3. **易於單元測試：** Domain 層可純粹測試，無需 Mock React
+4. **長期代碼質量：** 每層職責清晰，易於理解、修改、擴展
+5. **投資回報率高：** 現在投入 2-3 天設計，未來節省 1-3 週重構時間
+6. **支援多框架：** 同時維護 React 與 Vue 版本成本大幅降低
+
+### 架構分層（三層模型）
+
+```
+Domain (業務邏輯核心)
+  ├─ entities/           - MenuItem, MenuData 等業務實體
+  ├─ usecases/           - parseMenu, saveMenu 等業務流程
+  ├─ value-objects/      - SelectedItems, OrderPrice 等值對象
+  └─ ports/              - 定義外部依賴的抽象接口
+
+  特徵：完全框架無關，100% 可複用
+
+Infrastructure (外部依賴實現)
+  ├─ services/           - GeminiService, FirebaseService
+  ├─ repositories/       - 數據訪問層
+  ├─ adapters/           - 實現 Port 接口
+  └─ config/             - 初始化與配置
+
+  特徵：實現 Domain 的 Port 接口，100% 可複用
+
+UI (用戶界面 - 可替換)
+  ├─ [react]/            - React 實現
+  │  ├─ adapters/        - useParseMenu 等 Hooks
+  │  ├─ components/      - UI 組件
+  │  ├─ stores/          - Zustand 狀態管理
+  │  └─ pages/           - 頁面組件
+  │
+  └─ [vue]/              - Vue 實現（未來）
+     ├─ adapters/        - useParseMenu 等 Composables
+     ├─ components/      - Vue 組件
+     └─ pages/           - 頁面組件
+
+  特徵：框架特定，可完全替換
+```
+
+### 核心好處示例
+
+**業務邏輯相同性：**
+```typescript
+// src/domain/usecases/parseMenuImage.ts
+// 任何 UI 框架都使用相同的 UseCase
+export const createParseMenuImageUseCase = (geminiPort: GeminiPort) => ({
+  async execute(imageBase64: string) { ... }
+})
+```
+
+**框架適配層差異：**
+```typescript
+// React 適配
+export const useParseMenu = () => {
+  const [loading, setLoading] = useState(false)
+  const useCase = createParseMenuImageUseCase(geminiAdapter)
+  // ...
+}
+
+// Vue 適配（重用相同 useCase）
+export const useParseMenu = () => {
+  const loading = ref(false)
+  const useCase = createParseMenuImageUseCase(geminiAdapter)
+  // ...
+}
+```
+
+### 遷移成本對比
+
+| 時間點 | 架構方案 | 遷移成本 | 代碼改動 |
+|--------|---------|---------|--------|
+| **現在** | 六邊形 | 2-3 天設計 | +30% 初期結構 |
+| **1年後遷移** | 六邊形 | 1-3 天 | 15-20% (UI 層) |
+| **1年後遷移** | 傳統三層 | 2-3 週 | 40-60% |
+| **1年後遷移** | 無架構 | 無法遷移 | 80%+ 重寫 |
+
+### 實踐指南
+
+詳見 [ARCHITECTURE-EVOLUTION.md](./ARCHITECTURE-EVOLUTION.md) 的完整遷移指南。
+
+### 長期收益
+
+- ✅ **代碼複用率提升：** 80%+ 代碼在框架遷移時無需改動
+- ✅ **團隊學習曲線：** 新開發者易理解分層結構
+- ✅ **測試覆蓋率：** Domain 層可達成 90%+ 代碼覆蓋率
+- ✅ **快速迭代：** 業務邏輯獨立，功能開發與框架升級並行進行
+
+---
+
 ## 決策變更流程
 
 若需要變更上述決策，請遵循以下流程：

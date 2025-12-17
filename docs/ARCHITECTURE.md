@@ -46,44 +46,86 @@
 
 ---
 
-## 系統架構
+## 系統架構：六邊形架構 (Hexagonal Architecture)
+
+### 核心原則
+為了確保**長期可維護性**與**UI 框架可替換性**，KoreKore 採用六邊形架構（亦稱埠適配器架構）。
+
+- **核心業務邏輯完全獨立於 UI 框架**
+- **外部依賴（Gemini、Firebase）通過接口隔離**
+- **可無痛切換 React → Vue → Svelte 等框架**
 
 ### 高層架構圖
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     User Browser                             │
-│                                                               │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                  React Frontend (SPA)                    ││
-│  │  ┌──────────────┐  ┌──────────────┐  ┌────────────────┐││
-│  │  │ Menu Scan    │  │  AI Parser   │  │ Order Card    │││
-│  │  │  Components  │  │  Components  │  │ Components    │││
-│  │  └──────────────┘  └──────────────┘  └────────────────┘││
-│  │         │                 │                   │         │
-│  │         └─────────────────┴───────────────────┘         │
-│  │                   Zustand Store                          │
-│  └─────────────────────────────────────────────────────────┘
-│              │                          │
-└──────────────┼──────────────────────────┼──────────────────┘
-               │                          │
-        ┌──────▼─────────┐        ┌──────▼─────────┐
-        │  Gemini API    │        │  Firebase      │
-        │  (Menu Parse)  │        │  - Firestore   │
-        │                │        │  - Storage     │
-        │                │        │  - Auth        │
-        └────────────────┘        └────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                          UI 層（可替換）                           │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  React.js (src/ui/react/)                                  │ │
+│  │  ├─ Components (MenuScanForm, OrderCard, etc)              │ │
+│  │  ├─ Adapters (useParseMenu, useMenuHistory, etc)          │ │
+│  │  ├─ Stores (Zustand)                                       │ │
+│  │  └─ Pages                                                   │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                    │
+│  [ 未來可替換為 Vue.js / Svelte / Angular 而無需改動核心邏輯]    │
+└──────────────────────────────────────────────────────────────────┘
+                          ▲
+                          │ (通過 Ports 依賴)
+                          ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    Domain 層（業務邏輯核心）                       │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  src/domain/                                               │ │
+│  │  ├─ entities/          (MenuItem, MenuData, OrderCard)    │ │
+│  │  ├─ usecases/          (ParseMenu, SaveMenu, GetHistory)  │ │
+│  │  ├─ value-objects/     (SelectedItems, OrderPrice)        │ │
+│  │  └─ ports/             (GeminiPort, FirebasePort)         │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                    │
+│  特點：完全框架無關、易於測試、業務邏輯清晰                        │
+└──────────────────────────────────────────────────────────────────┘
+                          ▲
+                          │ (通過 Ports 依賴)
+                          ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                  Infrastructure 層（實現層）                       │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  src/infrastructure/                                       │ │
+│  │  ├─ services/          (GeminiService, FirebaseService)   │ │
+│  │  ├─ repositories/      (MenuRepository, ImageRepository)  │ │
+│  │  └─ adapters/          (Ports 的具體實現)                 │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                    │
+│  特點：實現外部依賴、可 Mock 進行測試                              │
+└──────────────────────────────────────────────────────────────────┘
+                          ▼
+         ┌────────────────┴────────────────┐
+         │                                  │
+    ┌────▼─────────┐             ┌────────▼──────┐
+    │ Gemini API   │             │  Firebase     │
+    │              │             │  (Firestore,  │
+    │ (Remote)     │             │   Storage,    │
+    │              │             │   Auth)       │
+    └──────────────┘             └───────────────┘
 ```
 
-### 三層架構分解
+### 分層詳解
 
-```
-Presentation Layer (src/components/, src/pages/)
-        ↓
-Service Layer (src/services/)
-        ↓
-Data Layer (Firebase SDK, Local Storage)
-```
+**1. Domain 層（核心業務邏輯）**
+- 純 TypeScript，完全獨立於任何框架
+- 不依賴 React、Vue、外部庫
+- 易於編寫單元測試（無需 Mock React）
+
+**2. Infrastructure 層（外部依賴）**
+- 實現 Domain 的 Ports 接口
+- 調用 Gemini API、Firebase SDK
+- 易於 Mock 進行測試
+
+**3. UI 層（用戶界面）**
+- React、Vue 等框架特定代碼
+- 通過 Adapters 連接 Domain 邏輯
+- 可完全替換而不影響核心邏輯
 
 ---
 
@@ -124,96 +166,283 @@ Data Layer (Firebase SDK, Local Storage)
 
 ---
 
-## 分層設計
+## 詳細分層設計
 
-### 1. Presentation Layer (UI 層)
+### 層級 1: Domain 層（業務邏輯核心）
 
 **責任：**
-- 渲染 UI 組件
-- 收集用戶輸入
-- 展示加載狀態、錯誤提示
+- 定義業務實體（Entity）與值對象（Value Object）
+- 實現業務用例（Use Case）邏輯
+- 定義外部依賴的埠（Port）接口
+- **完全獨立於 UI 框架、框架庫**
 
-**文件位置：**
-- `src/components/` - 可複用元件
-- `src/pages/` - 頁面級元件
-- `src/hooks/` - 自訂 React Hooks
-
-**例：**
-```typescript
-// src/components/MenuScanForm.tsx
-- 圖片上傳輸入框
-- 進度條
-- 錯誤提示
+**目錄結構：**
+```
+src/domain/
+├── entities/                    # 業務實體
+│   ├── MenuItem.ts             # 菜單項目
+│   ├── MenuData.ts             # 菜單數據集合
+│   └── OrderCard.ts            # 點餐卡
+│
+├── usecases/                   # 業務用例
+│   ├── parseMenuImage.ts       # 解析菜單圖片
+│   ├── saveMenu.ts             # 保存菜單
+│   ├── getMenuHistory.ts       # 獲取菜單歷史
+│   ├── selectMenuItems.ts      # 選擇菜單項目
+│   ├── generateOrderCard.ts    # 生成點餐卡
+│   └── index.ts               # 統一導出
+│
+├── value-objects/              # 值對象
+│   ├── SelectedItems.ts        # 選中項目集合
+│   ├── OrderPrice.ts           # 價格計算
+│   └── MenuLanguage.ts         # 菜單語言
+│
+├── ports/                       # 依賴接口（抽象層）
+│   ├── GeminiPort.ts           # Gemini API 接口
+│   ├── FirebasePort.ts         # Firebase 操作接口
+│   ├── LocalStoragePort.ts     # 本地存儲接口
+│   └── index.ts               # 統一導出
+│
+└── types/                       # Domain 層特有類型
+    └── index.ts
 ```
 
-### 2. Service Layer (業務邏輯層)
+**核心特徵：**
+- ❌ 不引入 `react`, `vue`, 任何 UI 框架
+- ❌ 不引入 `firebase`, `@google/generative-ai` 等外部服務
+- ✅ 只依賴 TypeScript、Node.js 標準庫
+- ✅ 純函數優先，易於測試
 
-**責任：**
-- 調用外部 API (Gemini, Firebase)
-- 數據驗證與轉換
-- 錯誤處理
-- 重試邏輯
-
-**文件位置：**
-- `src/services/geminiService.ts` - Gemini API 調用
-- `src/services/firebaseService.ts` - Firebase 操作
-- `src/services/storageService.ts` - 本地存儲
-
-**例：**
+**例子：**
 ```typescript
-// src/services/geminiService.ts
-export const parseMenuImage = async (imageBase64: string): Promise<MenuItem[]>
-  - 呼叫 Gemini API
-  - 驗證響應格式
-  - 返回結構化數據或拋出自訂 Error
+// src/domain/usecases/parseMenuImage.ts
+export interface ParseMenuImageUseCase {
+  execute(imageBase64: string): Promise<MenuData>
+}
 
-// src/services/firebaseService.ts
-export const saveMenu = async (userId: string, menu: MenuData): Promise<string>
-  - 儲存菜單至 Firestore
-  - 上傳圖片至 Cloud Storage
-  - 返回 menuId
-```
-
-### 3. State Management Layer (狀態層)
-
-**責任：**
-- 管理全局狀態（用戶設置、菜單歷史、選中項目）
-- 提供 State 選擇器與更新方法
-
-**使用工具：** Zustand
-
-**例：**
-```typescript
-// src/store/menuStore.ts
-{
-  menus: MenuData[];
-  selectedItems: MenuItem[];
-  currentLanguage: 'zh_TW' | 'en';
-
-  actions: {
-    addMenu,
-    removeMenu,
-    selectItem,
-    setLanguage
+// 純業務邏輯，框架無關
+export const createParseMenuImageUseCase = (
+  geminiPort: GeminiPort
+): ParseMenuImageUseCase => {
+  return {
+    async execute(imageBase64: string) {
+      // 業務邏輯
+      const items = await geminiPort.parseImage(imageBase64)
+      return { items, timestamp: new Date() }
+    }
   }
 }
 ```
 
-### 4. Type Layer (型別層)
+### 層級 2: Infrastructure 層（外部依賴實現）
 
 **責任：**
-- 定義所有 TypeScript 類型
-- 確保類型安全
-- 減少 `any` 的使用
+- 實現 Domain 層定義的埠（Port）接口
+- 調用 Gemini API、Firebase SDK、LocalStorage
+- 處理 IO 操作與外部通信
+- 易於 Mock 和測試
 
-**文件位置：**
-- `src/types/menu.ts` - 菜單相關
-- `src/types/api.ts` - API 請求/回應
-- `src/types/index.ts` - 統一導出
+**目錄結構：**
+```
+src/infrastructure/
+├── services/                    # 外部服務封裝
+│   ├── GeminiService.ts        # Gemini API 實現
+│   ├── FirebaseService.ts      # Firebase 實現
+│   ├── LocalStorageService.ts  # LocalStorage 實現
+│   └── index.ts               # 統一導出 & 初始化
+│
+├── repositories/               # 數據訪問層
+│   ├── MenuRepository.ts       # 菜單數據 CRUD
+│   ├── ImageRepository.ts      # 圖片存儲 CRUD
+│   ├── UserRepository.ts       # 用戶數據 CRUD
+│   └── index.ts
+│
+├── adapters/                    # Ports 實現
+│   ├── GeminiAdapter.ts        # 適配 Gemini API → GeminiPort
+│   ├── FirebaseAdapter.ts      # 適配 Firebase → FirebasePort
+│   └── index.ts
+│
+└── config/                      # 配置與初始化
+    ├── firebaseConfig.ts       # Firebase 初始化
+    ├── geminiConfig.ts         # Gemini 初始化
+    └── index.ts
+```
+
+**核心特徵：**
+- ✅ 實現 Domain 的 Port 接口
+- ✅ 可被 Mock Service 替換（用於測試）
+- ✅ 處理所有 IO 和外部通信
+- ✅ 錯誤映射為 Domain 層的 AppError
+
+**例子：**
+```typescript
+// src/infrastructure/adapters/GeminiAdapter.ts
+import { GeminiPort } from '@domain/ports'
+
+export class GeminiAdapter implements GeminiPort {
+  async parseImage(imageBase64: string): Promise<MenuItem[]> {
+    // 實現 Gemini API 調用
+    const response = await geminiService.generateContent({...})
+    return this.parseResponse(response)
+  }
+}
+```
+
+### 層級 3: UI 層（框架特定）
+
+**責任：**
+- 渲染用戶界面
+- 收集用戶輸入
+- 通過 Adapters 連接 Domain 邏輯
+- 管理 UI 狀態（Zustand）
+- **可完全替換（React → Vue → Svelte）**
+
+**目錄結構（React 例子）：**
+```
+src/ui/react/
+├── components/                  # UI 組件
+│   ├── common/                 # 通用組件
+│   │   ├── Button.tsx
+│   │   ├── Modal.tsx
+│   │   └── LoadingSpinner.tsx
+│   ├── features/               # 功能組件
+│   │   ├── MenuScanForm.tsx
+│   │   ├── MenuCardList.tsx
+│   │   ├── OrderCardDisplay.tsx
+│   │   └── MenuGallery.tsx
+│   └── layout/                 # 佈局組件
+│       ├── Header.tsx
+│       ├── Footer.tsx
+│       └── MainLayout.tsx
+│
+├── adapters/                    # Domain → React 的適配層
+│   ├── useParseMenu.ts         # Hook 包裹 parseMenuImageUseCase
+│   ├── useSaveMenu.ts
+│   ├── useMenuHistory.ts
+│   └── useOrderCard.ts
+│
+├── stores/                      # Zustand stores
+│   ├── appStore.ts             # 全局應用狀態
+│   ├── menuStore.ts            # 菜單相關狀態
+│   └── index.ts
+│
+├── pages/                       # 頁面組件
+│   ├── HomePage.tsx
+│   ├── MenuDetailPage.tsx
+│   └── HistoryPage.tsx
+│
+├── App.tsx                      # React 應用入口
+└── index.tsx                    # React DOM 渲染
+```
+
+**核心特徵：**
+- ✅ 只處理 UI 相關邏輯
+- ✅ 通過 Adapters 使用 Domain 邏輯
+- ✅ 管理 UI 狀態（不是業務狀態）
+- ✅ 完全可替換
+
+**例子：**
+```typescript
+// src/ui/react/adapters/useParseMenu.ts
+import { useState, useCallback } from 'react'
+import { createParseMenuImageUseCase } from '@domain/usecases'
+import { geminiAdapter } from '@infrastructure/adapters'
+
+// React 適配層，包裹 Domain 用例
+export const useParseMenu = () => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<AppError | null>(null)
+
+  const useCase = createParseMenuImageUseCase(geminiAdapter)
+
+  const parse = useCallback(async (imageBase64: string) => {
+    setLoading(true)
+    try {
+      return await useCase.execute(imageBase64)
+    } catch (err) {
+      setError(toAppError(err))
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  return { parse, loading, error }
+}
+```
+
+### 層級 4: Shared 層（跨層共用）
+
+**責任：**
+- 定義所有類型定義
+- 提供跨層通用工具
+- 完全獨立於任何層
+
+**目錄結構：**
+```
+src/shared/
+├── types/                       # 全局類型
+│   ├── menu.ts                 # 菜單相關
+│   ├── api.ts                  # API 相關
+│   ├── error.ts                # 錯誤相關
+│   └── index.ts
+│
+└── utils/                       # 通用工具函數
+    ├── imageProcessing.ts      # 圖片處理
+    ├── errorHandler.ts         # 錯誤處理
+    ├── i18n.ts                 # 多語系支援
+    └── index.ts
+```
 
 ---
 
-## 核心模塊
+## 依賴注入與初始化
+
+為了實現分層架構，使用依賴注入（DI）模式：
+
+```typescript
+// src/infrastructure/config/bootstrap.ts
+import { GeminiAdapter } from './adapters/GeminiAdapter'
+import { FirebaseAdapter } from './adapters/FirebaseAdapter'
+import { createParseMenuImageUseCase } from '@domain/usecases'
+
+// 初始化 Infrastructure 層
+export const adapters = {
+  gemini: new GeminiAdapter(),
+  firebase: new FirebaseAdapter(),
+}
+
+// 初始化 Domain 層 UseCase
+export const useCases = {
+  parseMenuImage: createParseMenuImageUseCase(adapters.gemini),
+  saveMenu: createSaveMenuUseCase(adapters.firebase),
+  // ...
+}
+
+// UI 層通過 adapters 使用 useCases
+export const createAppContextvalue = () => ({
+  useCases,
+  adapters,
+})
+```
+
+React Context 或 Props Drilling 提供給 UI 層：
+
+```typescript
+// src/ui/react/context/AppContext.tsx
+import { createContext } from 'react'
+import { createAppContextvalue } from '@infrastructure/config/bootstrap'
+
+export const AppContext = createContext(createAppContextvalue())
+
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const value = createAppContextvalue()
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>
+}
+```
+
+---
+
+## 核心功能模塊
 
 ### 模塊 1: Menu Scan (菜單掃描)
 
