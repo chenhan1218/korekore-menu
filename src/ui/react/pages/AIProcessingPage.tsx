@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useMenuStore } from '@/store/menuStore'
 import { createParseMenuImageUseCase } from '@/domain/usecases'
 import { GeminiAdapter } from '@/infrastructure/adapters'
@@ -21,6 +22,7 @@ import {
 } from '../components/features'
 
 export const AIProcessingPage = () => {
+  const navigate = useNavigate()
   const {
     currentMenu,
     selectedItems,
@@ -205,18 +207,20 @@ export const AIProcessingPage = () => {
       </div>
 
       {/* Summary bar */}
-      <OrderSummary
-        items={currentMenu.items.filter(item => selectedItems.has(item.id))}
-        onBack={() => {
-          // Reset to upload screen
-          clearCurrentMenu()
-          deselectAllItems()
-        }}
-        onNext={() => {
-          // TODO: Navigate to order card generation page
-          console.log('Next: Generate order card')
-        }}
-      />
+      {selectedItems.size > 0 && (
+        <OrderSummary
+          items={currentMenu.items.filter(item => selectedItems.has(item.id))}
+          onBack={() => {
+            // Reset to upload screen
+            clearCurrentMenu()
+            deselectAllItems()
+          }}
+          onNext={() => {
+            // Navigate to order card page
+            navigate('/order-card')
+          }}
+        />
+      )}
     </div>
   )
 }

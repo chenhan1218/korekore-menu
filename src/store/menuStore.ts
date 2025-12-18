@@ -10,14 +10,21 @@ import { MenuItem, MenuData } from '@/domain/entities'
 import { AppError } from '@/shared/types'
 
 /**
+ * Selected item with quantity information
+ */
+export interface SelectedItem extends MenuItem {
+  quantity: number
+}
+
+/**
  * Menu store state interface
  */
 export interface MenuStoreState {
   // Current menu data
   currentMenu: MenuData | null
 
-  // Selected menu items (checked by user)
-  selectedItems: Set<string>
+  // Selected menu items with quantity (itemId -> quantity)
+  selectedItems: Map<string, number>
 
   // Loading state
   isLoading: boolean
@@ -32,13 +39,18 @@ export interface MenuStoreState {
   setCurrentMenu: (menu: MenuData) => void
   clearCurrentMenu: () => void
   toggleItemSelection: (itemId: string) => void
+  updateItemQuantity: (itemId: string, quantity: number) => void
+  incrementItemQuantity: (itemId: string) => void
+  decrementItemQuantity: (itemId: string) => void
+  removeItem: (itemId: string) => void
   selectAllItems: () => void
   deselectAllItems: () => void
   setLoading: (loading: boolean) => void
   setError: (error: AppError | null) => void
   setLanguage: (language: 'zh_TW' | 'en') => void
-  getSelectedItems: () => MenuItem[]
+  getSelectedItems: () => SelectedItem[]
   getSelectedItemsCount: () => number
+  getTotalPrice: () => number
   resetState: () => void
 }
 
@@ -48,7 +60,7 @@ export interface MenuStoreState {
 export const useMenuStore = create<MenuStoreState>((set, get) => ({
   // Initial state
   currentMenu: null,
-  selectedItems: new Set(),
+  selectedItems: new Map(),
   isLoading: false,
   error: null,
   language: 'zh_TW',
@@ -57,7 +69,7 @@ export const useMenuStore = create<MenuStoreState>((set, get) => ({
   setCurrentMenu: (menu: MenuData) => {
     set({
       currentMenu: menu,
-      selectedItems: new Set(),
+      selectedItems: new Map(),
       error: null,
     })
   },
@@ -66,36 +78,85 @@ export const useMenuStore = create<MenuStoreState>((set, get) => ({
   clearCurrentMenu: () => {
     set({
       currentMenu: null,
-      selectedItems: new Set(),
+      selectedItems: new Map(),
       error: null,
     })
   },
 
-  // Action: Toggle item selection
+  // Action: Toggle item selection (add with qty=1 or remove)
   toggleItemSelection: (itemId: string) => {
     set(state => {
-      const newSelected = new Set(state.selectedItems)
+      const newSelected = new Map(state.selectedItems)
       if (newSelected.has(itemId)) {
         newSelected.delete(itemId)
       } else {
-        newSelected.add(itemId)
+        newSelected.set(itemId, 1)
       }
       return { selectedItems: newSelected }
     })
   },
 
-  // Action: Select all items
+  // Action: Update item quantity to specific value
+  updateItemQuantity: (itemId: string, quantity: number) => {
+    set(state => {
+      const newSelected = new Map(state.selectedItems)
+      if (quantity <= 0) {
+        newSelected.delete(itemId)
+      } else {
+        newSelected.set(itemId, quantity)
+      }
+      return { selectedItems: newSelected }
+    })
+  },
+
+  // Action: Increment item quantity
+  incrementItemQuantity: (itemId: string) => {
+    set(state => {
+      const newSelected = new Map(state.selectedItems)
+      const currentQty = newSelected.get(itemId) || 0
+      newSelected.set(itemId, currentQty + 1)
+      return { selectedItems: newSelected }
+    })
+  },
+
+  // Action: Decrement item quantity (remove if reaches 0)
+  decrementItemQuantity: (itemId: string) => {
+    set(state => {
+      const newSelected = new Map(state.selectedItems)
+      const currentQty = newSelected.get(itemId) || 0
+      if (currentQty <= 1) {
+        newSelected.delete(itemId)
+      } else {
+        newSelected.set(itemId, currentQty - 1)
+      }
+      return { selectedItems: newSelected }
+    })
+  },
+
+  // Action: Remove item from selection
+  removeItem: (itemId: string) => {
+    set(state => {
+      const newSelected = new Map(state.selectedItems)
+      newSelected.delete(itemId)
+      return { selectedItems: newSelected }
+    })
+  },
+
+  // Action: Select all items with qty=1
   selectAllItems: () => {
     set(state => {
       if (!state.currentMenu) return state
-      const allIds = new Set(state.currentMenu.items.map(item => item.id))
-      return { selectedItems: allIds }
+      const newSelected = new Map<string, number>()
+      state.currentMenu.items.forEach(item => {
+        newSelected.set(item.id, 1)
+      })
+      return { selectedItems: newSelected }
     })
   },
 
   // Action: Deselect all items
   deselectAllItems: () => {
-    set({ selectedItems: new Set() })
+    set({ selectedItems: new Map() })
   },
 
   // Action: Set loading state
@@ -113,23 +174,53 @@ export const useMenuStore = create<MenuStoreState>((set, get) => ({
     set({ language })
   },
 
-  // Getter: Get selected menu items
+  // Getter: Get selected menu items with quantity info
   getSelectedItems: () => {
     const state = get()
     if (!state.currentMenu) return []
-    return state.currentMenu.items.filter(item => state.selectedItems.has(item.id))
+
+    const selectedList: SelectedItem[] = []
+    state.selectedItems.forEach((quantity, itemId) => {
+      const menuItem = state.currentMenu!.items.find(item => item.id === itemId)
+      if (menuItem) {
+        selectedList.push({
+          ...menuItem,
+          quantity,
+        })
+      }
+    })
+
+    return selectedList
   },
 
-  // Getter: Get count of selected items
+  // Getter: Get count of selected item types (not total quantity)
   getSelectedItemsCount: () => {
     return get().selectedItems.size
+  },
+
+  // Getter: Get total price of selected items
+  getTotalPrice: () => {
+    const state = get()
+    let total = 0
+
+    state.selectedItems.forEach((quantity, itemId) => {
+      const menuItem = state.currentMenu?.items.find(item => item.id === itemId)
+      if (menuItem && menuItem.price) {
+        const price = parseFloat(menuItem.price)
+        if (!isNaN(price)) {
+          total += price * quantity
+        }
+      }
+    })
+
+    return total
   },
 
   // Action: Reset all state
   resetState: () => {
     set({
       currentMenu: null,
-      selectedItems: new Set(),
+      selectedItems: new Map(),
       isLoading: false,
       error: null,
       language: 'zh_TW',

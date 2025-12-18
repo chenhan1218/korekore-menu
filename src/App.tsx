@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ErrorBoundary } from '@/ui/react/components/layout'
 import { AIProcessingPage } from '@/ui/react/pages/AIProcessingPage'
+import { OrderCardPage } from '@/ui/react/pages/OrderCardPage'
 
 /**
  * Main application component
@@ -18,7 +19,8 @@ const App: React.FC = () => {
           <Routes>
             {/* AI Menu Processing - Main flow */}
             <Route path="/" element={<AIProcessingPage />} />
-            {/* TODO: Order card generation page */}
+            {/* Order card display page */}
+            <Route path="/order-card" element={<OrderCardPage />} />
             {/* TODO: Menu history page */}
             {/* TODO: Authentication pages */}
           </Routes>

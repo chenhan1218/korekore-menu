@@ -8,7 +8,7 @@ import { MenuCard } from './MenuCard'
 
 export interface MenuCardListProps {
   items: MenuItem[]
-  selectedIds: Set<string>
+  selectedIds: Map<string, number>
   onToggleItem: (itemId: string) => void
   onSelectAll?: () => void
   onDeselectAll?: () => void
