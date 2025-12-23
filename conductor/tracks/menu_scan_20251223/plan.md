@@ -42,10 +42,10 @@
 
 此階段目標：實現菜單圖片上傳的 UI 和邏輯，支援 JPG/PNG，自動壓縮超 5MB 的圖片。
 
-- [ ] Task: 實現圖片壓縮工具函數
-  - [ ] Write tests: 驗證圖片壓縮功能
-  - [ ] Implement: 在 `src/shared/imageCompression.ts` 中建立工具
-  - [ ] 測試應涵蓋：
+- [x] Task: 實現圖片壓縮工具函數 [863bc14]
+  - [x] Write tests: 驗證圖片壓縮功能
+  - [x] Implement: 在 `src/shared/imageCompression.ts` 中建立工具
+  - [x] 測試應涵蓋：
     - 超過 5MB 的圖片正確壓縮至 5MB 以下
     - JPEG 品質設置為 85-90%
     - 小於 5MB 的圖片保持不變
