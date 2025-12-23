@@ -6,30 +6,20 @@
 
 ## 🚀 進行中的 Tracks
 
-### Track: MVP 完成（端到端流程實現）
+### Track: MVP 完善與品質提升
 **狀態：** 🔄 進行中
 
 **描述：**
-完成 KoreKore MVP 的核心端到端功能實現。用戶可以完整體驗「拍照菜單 → 上傳 Firebase → Mock 菜單解析 → 點餐 → 生成點餐卡」的流程。本階段使用 Mock 數據替代真實 Gemini API，確保流程和 UX 完整。
+完善 KoreKore MVP，確保所有核心功能穩定、高品質。當前重點是 bug 修正、性能優化與代碼品質提升。
 
 **相關功能：**
-- ✅ 菜單圖片掃描與 Firebase 上傳
-- 🔄 Mock 菜單解析（暫不調用真實 API）
-- 🔄 點餐介面與選擇功能
-- 🔄 點餐卡生成與分享
-
-**分階段實現：**
-- Phase 1: UI 架構、路由、狀態管理
-- Phase 2: 菜單掃描、圖片上傳
-- Phase 3: Mock 菜單解析、點餐介面
-- Phase 4: 點餐卡生成、複製、分享
-- Phase 5: 測試覆蓋、CI/CD 設置
+- 菜單掃描與 AI 解析
+- 點餐介面與卡片生成
+- Firebase 同步與歷史紀錄
 
 **優先級：** 🔴 高
 
-**預期完成時間：** 9-14 天（全職開發，分階段）
-
-**Track 文件：** [conductor/tracks/complete_mvp_20251223/](conductor/tracks/complete_mvp_20251223/)
+**預期完成時間：** 迭代進行
 
 ---
 
