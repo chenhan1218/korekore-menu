@@ -26,10 +26,10 @@
   - [x] Implement: 在 `src/infrastructure/mockMenuService.ts` 中建立服務
   - [x] 測試應涵蓋：數據完整性、ID 唯一性、variants 陣列驗證
 
-- [ ] Task: 建立菜單掃描領域邏輯 (`MenuScanDomain`)
-  - [ ] Write tests: 驗證上傳圖片後能正確調用 Mock 服務
-  - [ ] Implement: 在 `src/domain/menuScan.ts` 中建立邏輯
-  - [ ] 測試應涵蓋：成功掃描、失敗情況、數據轉換
+- [x] Task: 建立菜單掃描領域邏輯 (`MenuScanDomain`) [ed466c8]
+  - [x] Write tests: 驗證上傳圖片後能正確調用 Mock 服務
+  - [x] Implement: 在 `src/domain/menuScan.ts` 中建立邏輯
+  - [x] 測試應涵蓋：成功掃描、失敗情況、數據轉換
 
 - [ ] Task: Phase 1 驗證
   - [ ] 執行完整測試套件，確保所有型別和服務通過測試
