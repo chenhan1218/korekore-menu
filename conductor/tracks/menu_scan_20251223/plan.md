@@ -21,10 +21,10 @@
   - [x] Implement: 在 `src/types/menu.ts` 中定義型別
   - [x] 測試應涵蓋：正確結構、缺失欄位、價格格式驗證
 
-- [ ] Task: 實現 Mock 菜單數據服務
-  - [ ] Write tests: 驗證 Mock 數據返回 20 個正確格式的菜項
-  - [ ] Implement: 在 `src/infrastructure/mockMenuService.ts` 中建立服務
-  - [ ] 測試應涵蓋：數據完整性、ID 唯一性、variants 陣列驗證
+- [x] Task: 實現 Mock 菜單數據服務 [d3124d8]
+  - [x] Write tests: 驗證 Mock 數據返回 20 個正確格式的菜項
+  - [x] Implement: 在 `src/infrastructure/mockMenuService.ts` 中建立服務
+  - [x] 測試應涵蓋：數據完整性、ID 唯一性、variants 陣列驗證
 
 - [ ] Task: 建立菜單掃描領域邏輯 (`MenuScanDomain`)
   - [ ] Write tests: 驗證上傳圖片後能正確調用 Mock 服務
