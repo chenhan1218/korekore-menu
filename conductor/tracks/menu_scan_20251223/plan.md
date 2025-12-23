@@ -16,10 +16,10 @@
 
 此階段目標：建立完整的型別系統和 Mock 數據服務，為後續組件開發奠定基礎。
 
-- [ ] Task: 建立菜單項目型別定義 (`MenuItemType`, `VariantType` 等)
-  - [ ] Write tests: 驗證型別結構和數據驗證邏輯
-  - [ ] Implement: 在 `src/types/menu.ts` 中定義型別
-  - [ ] 測試應涵蓋：正確結構、缺失欄位、價格格式驗證
+- [x] Task: 建立菜單項目型別定義 (`MenuItemType`, `VariantType` 等) [31da4d6]
+  - [x] Write tests: 驗證型別結構和數據驗證邏輯
+  - [x] Implement: 在 `src/types/menu.ts` 中定義型別
+  - [x] 測試應涵蓋：正確結構、缺失欄位、價格格式驗證
 
 - [ ] Task: 實現 Mock 菜單數據服務
   - [ ] Write tests: 驗證 Mock 數據返回 20 個正確格式的菜項
