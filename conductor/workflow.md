@@ -1,384 +1,333 @@
-# KoreKore Conductor 工作流程
+# Project Workflow
+
+## Guiding Principles
+
+1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
+2. **The Tech Stack is Deliberate:** Changes to the tech stack must be documented in `tech-stack.md` *before* implementation
+3. **Test-Driven Development:** Write unit tests before implementing functionality
+4. **High Code Coverage:** Aim for >80% code coverage for all modules
+5. **User Experience First:** Every decision should prioritize user experience
+6. **Non-Interactive & CI-Aware:** Prefer non-interactive commands. Use `CI=true` for watch-mode tools (tests, linters) to ensure single execution.
+
+## Task Workflow
+
+All tasks follow a strict lifecycle:
+
+### Standard Task Workflow
+
+1. **Select Task:** Choose the next available task from `plan.md` in sequential order
+
+2. **Mark In Progress:** Before beginning work, edit `plan.md` and change the task from `[ ]` to `[~]`
+
+3. **Write Failing Tests (Red Phase):**
+   - Create a new test file for the feature or bug fix.
+   - Write one or more unit tests that clearly define the expected behavior and acceptance criteria for the task.
+   - **CRITICAL:** Run the tests and confirm that they fail as expected. This is the "Red" phase of TDD. Do not proceed until you have failing tests.
+
+4. **Implement to Pass Tests (Green Phase):**
+   - Write the minimum amount of application code necessary to make the failing tests pass.
+   - Run the test suite again and confirm that all tests now pass. This is the "Green" phase.
+
+5. **Refactor (Optional but Recommended):**
+   - With the safety of passing tests, refactor the implementation code and the test code to improve clarity, remove duplication, and enhance performance without changing the external behavior.
+   - Rerun tests to ensure they still pass after refactoring.
+
+6. **Verify Coverage:** Run coverage reports using the project's chosen tools. For example, in a Python project, this might look like:
+   ```bash
+   pytest --cov=app --cov-report=html
+   ```
+   Target: >80% coverage for new code. The specific tools and commands will vary by language and framework.
+
+7. **Document Deviations:** If implementation differs from tech stack:
+   - **STOP** implementation
+   - Update `tech-stack.md` with new design
+   - Add dated note explaining the change
+   - Resume implementation
+
+8. **Commit Code Changes:**
+   - Stage all code changes related to the task.
+   - Propose a clear, concise commit message e.g, `feat(ui): Create basic HTML structure for calculator`.
+   - Perform the commit.
+
+9. **Attach Task Summary with Git Notes:**
+   - **Step 9.1: Get Commit Hash:** Obtain the hash of the *just-completed commit* (`git log -1 --format="%H"`).
+   - **Step 9.2: Draft Note Content:** Create a detailed summary for the completed task. This should include the task name, a summary of changes, a list of all created/modified files, and the core "why" for the change.
+   - **Step 9.3: Attach Note:** Use the `git notes` command to attach the summary to the commit.
+     ```bash
+     # The note content from the previous step is passed via the -m flag.
+     git notes add -m "<note content>" <commit_hash>
+     ```
+
+10. **Get and Record Task Commit SHA:**
+    - **Step 10.1: Update Plan:** Read `plan.md`, find the line for the completed task, update its status from `[~]` to `[x]`, and append the first 7 characters of the *just-completed commit's* commit hash.
+    - **Step 10.2: Write Plan:** Write the updated content back to `plan.md`.
+
+11. **Commit Plan Update:**
+    - **Action:** Stage the modified `plan.md` file.
+    - **Action:** Commit this change with a descriptive message (e.g., `conductor(plan): Mark task 'Create user model' as complete`).
+
+### Phase Completion Verification and Checkpointing Protocol
+
+**Trigger:** This protocol is executed immediately after a task is completed that also concludes a phase in `plan.md`.
+
+1.  **Announce Protocol Start:** Inform the user that the phase is complete and the verification and checkpointing protocol has begun.
+
+2.  **Ensure Test Coverage for Phase Changes:**
+    -   **Step 2.1: Determine Phase Scope:** To identify the files changed in this phase, you must first find the starting point. Read `plan.md` to find the Git commit SHA of the *previous* phase's checkpoint. If no previous checkpoint exists, the scope is all changes since the first commit.
+    -   **Step 2.2: List Changed Files:** Execute `git diff --name-only <previous_checkpoint_sha> HEAD` to get a precise list of all files modified during this phase.
+    -   **Step 2.3: Verify and Create Tests:** For each file in the list:
+        -   **CRITICAL:** First, check its extension. Exclude non-code files (e.g., `.json`, `.md`, `.yaml`).
+        -   For each remaining code file, verify a corresponding test file exists.
+        -   If a test file is missing, you **must** create one. Before writing the test, **first, analyze other test files in the repository to determine the correct naming convention and testing style.** The new tests **must** validate the functionality described in this phase's tasks (`plan.md`).
+
+3.  **Execute Automated Tests with Proactive Debugging:**
+    -   Before execution, you **must** announce the exact shell command you will use to run the tests.
+    -   **Example Announcement:** "I will now run the automated test suite to verify the phase. **Command:** `CI=true npm test`"
+    -   Execute the announced command.
+    -   If tests fail, you **must** inform the user and begin debugging. You may attempt to propose a fix a **maximum of two times**. If the tests still fail after your second proposed fix, you **must stop**, report the persistent failure, and ask the user for guidance.
+
+4.  **Propose a Detailed, Actionable Manual Verification Plan:**
+    -   **CRITICAL:** To generate the plan, first analyze `product.md`, `product-guidelines.md`, and `plan.md` to determine the user-facing goals of the completed phase.
+    -   You **must** generate a step-by-step plan that walks the user through the verification process, including any necessary commands and specific, expected outcomes.
+    -   The plan you present to the user **must** follow this format:
+
+        **For a Frontend Change:**
+        ```
+        The automated tests have passed. For manual verification, please follow these steps:
+
+        **Manual Verification Steps:**
+        1.  **Start the development server with the command:** `npm run dev`
+        2.  **Open your browser to:** `http://localhost:3000`
+        3.  **Confirm that you see:** The new user profile page, with the user's name and email displayed correctly.
+        ```
 
-## 📋 工作模式概述
+        **For a Backend Change:**
+        ```
+        The automated tests have passed. For manual verification, please follow these steps:
 
-本項目遵循 **Test-Driven Development (TDD) + Hexagonal Architecture** 的工作模式，結合 Conductor 的 Track 系統管理功能開發。
+        **Manual Verification Steps:**
+        1.  **Ensure the server is running.**
+        2.  **Execute the following command in your terminal:** `curl -X POST http://localhost:8080/api/v1/users -d '{"name": "test"}'`
+        3.  **Confirm that you receive:** A JSON response with a status of `201 Created`.
+        ```
 
----
+5.  **Await Explicit User Feedback:**
+    -   After presenting the detailed plan, ask the user for confirmation: "**Does this meet your expectations? Please confirm with yes or provide feedback on what needs to be changed.**"
+    -   **PAUSE** and await the user's response. Do not proceed without an explicit yes or confirmation.
 
-## 🎯 工作流程階段
+6.  **Create Checkpoint Commit:**
+    -   Stage all changes. If no changes occurred in this step, proceed with an empty commit.
+    -   Perform the commit with a clear and concise message (e.g., `conductor(checkpoint): Checkpoint end of Phase X`).
 
-### Phase 1: 需求梳理與規劃（Specification）
+7.  **Attach Auditable Verification Report using Git Notes:**
+    -   **Step 8.1: Draft Note Content:** Create a detailed verification report including the automated test command, the manual verification steps, and the user's confirmation.
+    -   **Step 8.2: Attach Note:** Use the `git notes` command and the full commit hash from the previous step to attach the full report to the checkpoint commit.
 
-**目標：** 明確功能需求與接受條件
+8.  **Get and Record Phase Checkpoint SHA:**
+    -   **Step 7.1: Get Commit Hash:** Obtain the hash of the *just-created checkpoint commit* (`git log -1 --format="%H"`).
+    -   **Step 7.2: Update Plan:** Read `plan.md`, find the heading for the completed phase, and append the first 7 characters of the commit hash in the format `[checkpoint: <sha>]`.
+    -   **Step 7.3: Write Plan:** Write the updated content back to `plan.md`.
 
-1. **建立 Track**
-   - 描述功能或 bug 修正
-   - 定義完成標準（Definition of Done）
-   - 評估影響範圍
+9. **Commit Plan Update:**
+    - **Action:** Stage the modified `plan.md` file.
+    - **Action:** Commit this change with a descriptive message following the format `conductor(plan): Mark phase '<PHASE NAME>' as complete`.
 
-2. **需求分析**
-   - 確認涉及的層級（Domain / Infrastructure / UI）
-   - 識別相關的 Port 或 Service
-   - 檢視可能的技術債
+10.  **Announce Completion:** Inform the user that the phase is complete and the checkpoint has been created, with the detailed verification report attached as a git note.
 
-3. **架構決策**
-   - 評估是否需要新的 Port 或 Adapter
-   - 確認是否涉及 API 契約變更
-   - 討論長期擴展性影響
+### Quality Gates
 
-**輸出：** 清晰的 Spec 與實施計劃
+Before marking any task complete, verify:
 
----
+- [ ] All tests pass
+- [ ] Code coverage meets requirements (>80%)
+- [ ] Code follows project's code style guidelines (as defined in `code_styleguides/`)
+- [ ] All public functions/methods are documented (e.g., docstrings, JSDoc, GoDoc)
+- [ ] Type safety is enforced (e.g., type hints, TypeScript types, Go types)
+- [ ] No linting or static analysis errors (using the project's configured tools)
+- [ ] Works correctly on mobile (if applicable)
+- [ ] Documentation updated if needed
+- [ ] No security vulnerabilities introduced
 
-### Phase 2: 領域層設計與測試（Domain Layer）
+## Development Commands
 
-**目標：** 設計並實現核心業務邏輯
+**AI AGENT INSTRUCTION: This section should be adapted to the project's specific language, framework, and build tools.**
 
-#### 2.1 設計 Domain 模型
-
-- 識別或修改 **Entity**（MenuItem、MenuData 等）
-- 設計 **Value Objects**（如果需要）
-- 更新或新增 **Ports（接口）**
-
-#### 2.2 編寫 Domain 單元測試
-
-```typescript
-// Domain 層測試必須涵蓋：
-describe('ParseMenuUseCase', () => {
-  // 1. 正常場景
-  test('should parse valid menu image')
-
-  // 2. 邊界條件
-  test('should handle empty menu')
-  test('should validate image format')
-
-  // 3. 錯誤場景
-  test('should throw error for invalid input')
-
-  // 4. 業務規則
-  test('should apply translation correctly')
-})
-```
-
-#### 2.3 實現 Domain UseCase
-
-```typescript
-// 實現應該只依賴 Ports（接口）
-export class ParseMenuUseCase {
-  constructor(
-    private geminiPort: GeminiPort,
-    private storagePort: StoragePort
-  ) {}
-
-  execute(imageData: Buffer) {
-    // Domain 邏輯不涉及 React、Firebase SDK 等
-  }
-}
-```
-
-**重點：** Domain 層代碼完全獨立於框架，易於測試
-
----
-
-### Phase 3: Infrastructure 層實現（Infrastructure Layer）
-
-**目標：** 實現 Port 適配器與外部服務集成
-
-#### 3.1 實現 Adapters
-
-```typescript
-// 實現 GeminiPort
-export class GeminiAdapter implements GeminiPort {
-  constructor(private geminiService: GeminiService) {}
-
-  async parseMenuImage(image: Buffer) {
-    // 調用 Gemini API
-  }
-}
-```
-
-#### 3.2 編寫 Integration 測試
-
-```typescript
-describe('GeminiAdapter Integration', () => {
-  // 測試與實際 API 的交互
-  test('should call Gemini API correctly')
-  test('should handle API errors gracefully')
-  test('should transform response format')
-})
-```
-
-#### 3.3 Error Handling
-
-遵循既定的錯誤處理策略：
-- 使用統一的 Error 類型
-- 記錄詳細的錯誤信息
-- 向上層提供清晰的錯誤消息
-
----
-
-### Phase 4: UI 層實現與集成（UI Layer）
-
-**目標：** 實現 React 組件與用戶交互
-
-#### 4.1 建立 React Hooks 適配器
-
-```typescript
-// Adapter 連接 Domain UseCase 與 React
-export function useParseMenu() {
-  const [state, setState] = useState(...)
-  const [error, setError] = useState(...)
-
-  const parse = useCallback(async (image: File) => {
-    try {
-      const usecase = new ParseMenuUseCase(
-        geminiAdapter,
-        storageAdapter
-      )
-      const result = await usecase.execute(image)
-      setState(result)
-    } catch (err) {
-      setError(err)
-    }
-  }, [])
-
-  return { state, error, parse }
-}
-```
-
-#### 4.2 實現 React 組件
-
-```typescript
-// 組件使用 Hooks 並提供清晰的 UI
-export function MenuScanForm() {
-  const { state, error, parse } = useParseMenu()
-
-  return (
-    // JSX 實現...
-  )
-}
-```
-
-#### 4.3 編寫組件測試
-
-```typescript
-describe('MenuScanForm', () => {
-  test('should display loading state while parsing')
-  test('should show error message on failure')
-  test('should display menu items on success')
-  test('should call onSuccess callback')
-})
-```
-
-#### 4.4 E2E 測試（如適用）
-
-- 測試完整的用戶流程
-- 驗證跨組件交互
-
----
-
-### Phase 5: 審查與驗收（Review）
-
-#### 5.1 代碼審查
-
-檢查清單：
-- ✅ 是否遵循 Domain / Infrastructure / UI 層的分離
-- ✅ Domain 層是否完全獨立於框架
-- ✅ 是否有適當的錯誤處理
-- ✅ 代碼風格是否一致（ESLint + Prettier）
-- ✅ TypeScript 類型是否完整
-- ✅ 是否有充分的測試覆蓋
-
-#### 5.2 功能驗證
-
-- 手動測試核心用戶流程
-- 驗證所有接受條件都已滿足
-- 檢視性能指標（如適用）
-
-#### 5.3 文檔更新
-
-- 更新 ARCHITECTURE.md（如有架構變更）
-- 更新 CODE-STANDARDS.md（如有新規範）
-- 記錄決策至 DECISIONS.md
-
----
-
-## 🧪 測試策略
-
-### 測試金字塔
-
-```
-        △
-       /│\        E2E 測試（少數關鍵流程）
-      / │ \       5-10% 測試覆蓋
-     /  │  \
-    ┌───┴───┐
-    │ Integration\     集成測試（Port 實現與 API）
-    │ Tests      \    20-30% 測試覆蓋
-    ├─────────────┐
-    │   Unit Tests│   單元測試（Domain 邏輯與 Hooks）
-    │             │   60-70% 測試覆蓋
-    └─────────────┘
-```
-
-### 測試編寫指南
-
-#### Domain 層單元測試
-
-```typescript
-// Mock 所有 Ports
-const mockGeminiPort = {
-  parseMenuImage: vi.fn()
-}
-
-describe('ParseMenuUseCase', () => {
-  test('should return parsed menu', async () => {
-    const useCase = new ParseMenuUseCase(mockGeminiPort)
-    const result = await useCase.execute(imageBuffer)
-
-    expect(result).toBeDefined()
-    expect(result.items.length).toBeGreaterThan(0)
-  })
-})
-```
-
-#### Infrastructure 層集成測試
-
-```typescript
-// 測試真實的 API 或使用 mock server
-describe('GeminiAdapter', () => {
-  test('should handle rate limiting', async () => {
-    // 模擬 429 Rate Limit 響應
-    const adapter = new GeminiAdapter(mockService)
-    // 驗證重試邏輯或錯誤處理
-  })
-})
-```
-
-#### UI 層組件測試
-
-```typescript
-import { render, screen, userEvent } from '@testing-library/react'
-
-describe('MenuScanForm', () => {
-  test('should call onSubmit with selected file', async () => {
-    const onSubmit = vi.fn()
-    render(<MenuScanForm onSubmit={onSubmit} />)
-
-    const file = new File(['content'], 'menu.jpg')
-    await userEvent.upload(screen.getByRole('input'), file)
-    await userEvent.click(screen.getByRole('button', { name: /scan/i }))
-
-    expect(onSubmit).toHaveBeenCalledWith(file)
-  })
-})
-```
-
----
-
-## 📝 Commit 與 PR 規範
-
-### Commit 消息格式
-
-遵循 Conventional Commits：
-
-```
-<type>(<scope>): <subject>
-
-<body>
-
-<footer>
-```
-
-**Type：**
-- `feat` - 新功能
-- `fix` - 修復 bug
-- `refactor` - 代碼重構
-- `test` - 添加或修改測試
-- `docs` - 文檔變更
-- `chore` - 構建、依賴等無關代碼變更
-
-**範例：**
-```
-feat(menu-scan): implement AI menu parsing with Gemini API
-
-- Add ParseMenuUseCase in domain layer
-- Implement GeminiAdapter for API integration
-- Add comprehensive unit tests for domain logic
-- Add MenuScanForm component with file upload
-
-Closes #42
-```
-
-### Pull Request 檢查清單
-
-- ✅ 代碼遵循編碼規範（ESLint / Prettier）
-- ✅ TypeScript 無類型錯誤
-- ✅ 所有新代碼都有測試
-- ✅ 所有測試通過（`npm run test`）
-- ✅ 構建成功（`npm run build`）
-- ✅ 相關文檔已更新
-- ✅ 提交消息遵循 Conventional Commits
-
----
-
-## 🚀 部署流程
-
-### 前提條件
+### Setup
 ```bash
-# 所有以下命令必須成功執行
-npm run type-check
-npm run lint
-npm run test
-npm run build
+# Example: Commands to set up the development environment (e.g., install dependencies, configure database)
+# e.g., for a Node.js project: npm install
+# e.g., for a Go project: go mod tidy
 ```
 
-### 部署步驟（Firebase Hosting）
-
+### Daily Development
 ```bash
-# 1. 確保代碼已提交到主分支
-git log -1 --oneline
-
-# 2. 構建
-npm run build
-
-# 3. 部署
-firebase deploy
-
-# 4. 驗證線上應用
-# 訪問部署的 URL 並執行冒煙測試
+# Example: Commands for common daily tasks (e.g., start dev server, run tests, lint, format)
+# e.g., for a Node.js project: npm run dev, npm test, npm run lint
+# e.g., for a Go project: go run main.go, go test ./..., go fmt ./...
 ```
 
----
+### Before Committing
+```bash
+# Example: Commands to run all pre-commit checks (e.g., format, lint, type check, run tests)
+# e.g., for a Node.js project: npm run check
+# e.g., for a Go project: make check (if a Makefile exists)
+```
 
-## 📊 工作優先級
+## Testing Requirements
 
-按以下優先順序執行工作：
+### Unit Testing
+- Every module must have corresponding tests.
+- Use appropriate test setup/teardown mechanisms (e.g., fixtures, beforeEach/afterEach).
+- Mock external dependencies.
+- Test both success and failure cases.
 
-### 優先級 1（高）- 執行以完成
-1. **架構設計的完整性** - 遵循六邊形架構
-2. **代碼品質與測試** - 充分的測試覆蓋
-3. **錯誤處理** - 統一的錯誤處理策略
-4. **文檔維護** - 設計決策和架構文檔保持最新
+### Integration Testing
+- Test complete user flows
+- Verify database transactions
+- Test authentication and authorization
+- Check form submissions
 
-### 優先級 2（中）- 重視但可迭代
-1. 性能優化（如實測有問題）
-2. UI/UX 改進
-3. 新功能開發
+### Mobile Testing
+- Test on actual iPhone when possible
+- Use Safari developer tools
+- Test touch interactions
+- Verify responsive layouts
+- Check performance on 3G/4G
 
-### 優先級 3（低）- 暫緩考慮
-1. 過早優化
-2. 非關鍵功能
-3. 假想的擴展點
+## Code Review Process
 
----
+### Self-Review Checklist
+Before requesting review:
 
-## 🔗 相關文檔
+1. **Functionality**
+   - Feature works as specified
+   - Edge cases handled
+   - Error messages are user-friendly
 
-- [產品願景](./product.md)
-- [技術棧](./tech-stack.md)
-- [系統架構](../docs/ARCHITECTURE.md)
-- [編碼規範](../docs/CODE-STANDARDS.md)
-- [功能清單](../docs/FEATURE-CHECKLIST.md)
-- [架構決策](../docs/DECISIONS.md)
+2. **Code Quality**
+   - Follows style guide
+   - DRY principle applied
+   - Clear variable/function names
+   - Appropriate comments
+
+3. **Testing**
+   - Unit tests comprehensive
+   - Integration tests pass
+   - Coverage adequate (>80%)
+
+4. **Security**
+   - No hardcoded secrets
+   - Input validation present
+   - SQL injection prevented
+   - XSS protection in place
+
+5. **Performance**
+   - Database queries optimized
+   - Images optimized
+   - Caching implemented where needed
+
+6. **Mobile Experience**
+   - Touch targets adequate (44x44px)
+   - Text readable without zooming
+   - Performance acceptable on mobile
+   - Interactions feel native
+
+## Commit Guidelines
+
+### Message Format
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+### Types
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation only
+- `style`: Formatting, missing semicolons, etc.
+- `refactor`: Code change that neither fixes a bug nor adds a feature
+- `test`: Adding missing tests
+- `chore`: Maintenance tasks
+
+### Examples
+```bash
+git commit -m "feat(auth): Add remember me functionality"
+git commit -m "fix(posts): Correct excerpt generation for short posts"
+git commit -m "test(comments): Add tests for emoji reaction limits"
+git commit -m "style(mobile): Improve button touch targets"
+```
+
+## Definition of Done
+
+A task is complete when:
+
+1. All code implemented to specification
+2. Unit tests written and passing
+3. Code coverage meets project requirements
+4. Documentation complete (if applicable)
+5. Code passes all configured linting and static analysis checks
+6. Works beautifully on mobile (if applicable)
+7. Implementation notes added to `plan.md`
+8. Changes committed with proper message
+9. Git note with task summary attached to the commit
+
+## Emergency Procedures
+
+### Critical Bug in Production
+1. Create hotfix branch from main
+2. Write failing test for bug
+3. Implement minimal fix
+4. Test thoroughly including mobile
+5. Deploy immediately
+6. Document in plan.md
+
+### Data Loss
+1. Stop all write operations
+2. Restore from latest backup
+3. Verify data integrity
+4. Document incident
+5. Update backup procedures
+
+### Security Breach
+1. Rotate all secrets immediately
+2. Review access logs
+3. Patch vulnerability
+4. Notify affected users (if any)
+5. Document and update security procedures
+
+## Deployment Workflow
+
+### Pre-Deployment Checklist
+- [ ] All tests passing
+- [ ] Coverage >80%
+- [ ] No linting errors
+- [ ] Mobile testing complete
+- [ ] Environment variables configured
+- [ ] Database migrations ready
+- [ ] Backup created
+
+### Deployment Steps
+1. Merge feature branch to main
+2. Tag release with version
+3. Push to deployment service
+4. Run database migrations
+5. Verify deployment
+6. Test critical paths
+7. Monitor for errors
+
+### Post-Deployment
+1. Monitor analytics
+2. Check error logs
+3. Gather user feedback
+4. Plan next iteration
+
+## Continuous Improvement
+
+- Review workflow weekly
+- Update based on pain points
+- Document lessons learned
+- Optimize for user happiness
+- Keep things simple and maintainable
