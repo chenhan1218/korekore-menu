@@ -17,3 +17,19 @@ This file tracks all major work items. Each track has its own spec and plan.
 - Phase 4: 完整集成與應用
 
 ---
+
+## [ ] Track: 修復 npm run dev 錯誤
+
+*Link: [conductor/tracks/fix_npm_dev_20251223/](conductor/tracks/fix_npm_dev_20251223/)*
+
+**描述**：修復 Firebase 與 Vite 的兼容性問題，使 `npm run dev` 能正常啟動開發服務器。
+
+---
+
+## [ ] Track: 設置 GitHub Actions CI Workflow
+
+*Link: [conductor/tracks/setup_github_ci_20251223/](conductor/tracks/setup_github_ci_20251223/)*
+
+**描述**：建立自動化 CI pipeline，在每次 push 和 PR 時執行測試、代碼檢查、構建驗證和覆蓋率報告。
+
+---
