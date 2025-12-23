@@ -131,14 +131,12 @@ TDD 工作流：
 ---
 
 #### Task 1.4: Conductor Phase Verification
-- [x] 所有路由正確工作
-- [x] 所有頁面能正常渲染
-- [x] Store 初始化正常
-- [x] UI 組件可正常使用
-- [x] TypeScript 無類型錯誤
-- [x] ESLint 無警告
-
-**Phase 1 Checkpoint:** [checkpoint: a291840]
+- [ ] 所有路由正確工作
+- [ ] 所有頁面能正常渲染
+- [ ] Store 初始化正常
+- [ ] UI 組件可正常使用
+- [ ] TypeScript 無類型錯誤
+- [ ] ESLint 無警告
 
 **提交 PR：**
 ```
