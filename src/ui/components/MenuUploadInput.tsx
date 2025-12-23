@@ -9,18 +9,18 @@
  * - Provides user-friendly error messages
  */
 
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback } from 'react';
 
 interface MenuUploadInputProps {
-  onFileSelect: (file: File) => void
-  onError: (error: string) => void
-  isLoading?: boolean
-  disabled?: boolean
-  errorMessage?: string
+  onFileSelect: (file: File) => void;
+  onError: (error: string) => void;
+  isLoading?: boolean;
+  disabled?: boolean;
+  errorMessage?: string;
 }
 
-const SUPPORTED_FORMATS = ['image/jpeg', 'image/png']
-const MAX_FILE_SIZE = 15 * 1024 * 1024 // 15MB
+const SUPPORTED_FORMATS = ['image/jpeg', 'image/png'];
+const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 
 /**
  * MenuUploadInput Component
@@ -40,71 +40,70 @@ export function MenuUploadInput({
   disabled = false,
   errorMessage,
 }: MenuUploadInputProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [isProcessing, setIsProcessing] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const validateFile = useCallback(
     (file: File): boolean => {
       // Check file format
       if (!SUPPORTED_FORMATS.includes(file.type)) {
-        onError(
-          `File format not supported: ${file.type}. Supported formats: JPG, PNG`
-        )
-        return false
+        onError(`File format not supported: ${file.type}. Supported formats: JPG, PNG`);
+        return false;
       }
 
       // Check file size
       if (file.size > MAX_FILE_SIZE) {
-        onError(`File size (${file.size} bytes) exceeds maximum limit of 15MB`)
-        return false
+        onError(`File size (${file.size} bytes) exceeds maximum limit of 15MB`);
+        return false;
       }
 
-      return true
+      return true;
     },
     [onError]
-  )
+  );
 
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files
+      const files = event.target.files;
 
       // No file selected
       if (!files || files.length === 0) {
-        return
+        return;
       }
 
-      const file = files[0]
+      const file = files[0];
+
+      // TypeScript guard: ensure file is defined
+      if (!file) {
+        return;
+      }
 
       // Validate file
       if (!validateFile(file)) {
         // Reset file input
         if (fileInputRef.current) {
-          fileInputRef.current.value = ''
+          fileInputRef.current.value = '';
         }
-        return
+        return;
       }
 
       // File is valid, call callback
-      setIsProcessing(true)
+      setIsProcessing(true);
       try {
-        onFileSelect(file)
+        onFileSelect(file);
       } finally {
-        setIsProcessing(false)
+        setIsProcessing(false);
       }
     },
     [validateFile, onFileSelect]
-  )
+  );
 
-  const isDisabled = disabled || isLoading || isProcessing
+  const isDisabled = disabled || isLoading || isProcessing;
 
   return (
     <div className="menu-upload-input">
       <div className="upload-container">
-        <label
-          htmlFor="menu-file-input"
-          className="upload-label"
-          aria-label="Upload menu image"
-        >
+        <label htmlFor="menu-file-input" className="upload-label" aria-label="Upload menu image">
           <input
             ref={fileInputRef}
             id="menu-file-input"
@@ -229,5 +228,5 @@ export function MenuUploadInput({
         }
       `}</style>
     </div>
-  )
+  );
 }

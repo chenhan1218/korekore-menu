@@ -7,17 +7,17 @@
  * Key point: The business logic is in Domain, this only handles React-specific concerns
  */
 
-import { useState, useCallback } from 'react'
-import { createParseMenuImageUseCase } from '@/domain/usecases'
-import { MenuData } from '@/domain/entities'
-import { AppError } from '@/shared/types'
-import { GeminiAdapter } from '@/infrastructure/adapters'
+import { useState, useCallback } from 'react';
+import { createParseMenuImageUseCase } from '@/domain/usecases';
+import { MenuData } from '@/domain/entities';
+import { AppError, ErrorCode } from '@/shared/types';
+import { GeminiAdapter } from '@/infrastructure/adapters';
 
 interface UseParseMenuResult {
-  parse: (imageBase64: string, language?: 'zh_TW' | 'en') => Promise<MenuData | null>
-  loading: boolean
-  error: AppError | null
-  clearError: () => void
+  parse: (imageBase64: string, language?: 'zh_TW' | 'en') => Promise<MenuData | null>;
+  loading: boolean;
+  error: AppError | null;
+  clearError: () => void;
 }
 
 /**
@@ -45,43 +45,44 @@ interface UseParseMenuResult {
  * ```
  */
 export const useParseMenu = (): UseParseMenuResult => {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<AppError | null>(null)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<AppError | null>(null);
 
   // Create Use Case (dependency injection)
   // In production, this would be provided via Context or Props
-  const geminiAdapter = new GeminiAdapter()
-  const parseMenuUseCase = createParseMenuImageUseCase(geminiAdapter)
+  const geminiAdapter = new GeminiAdapter();
+  const parseMenuUseCase = createParseMenuImageUseCase(geminiAdapter);
 
   const parse = useCallback(
     async (imageBase64: string, language: 'zh_TW' | 'en' = 'zh_TW'): Promise<MenuData | null> => {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
       try {
         // Call Domain UseCase
-        const menuData = await parseMenuUseCase.execute(imageBase64, language)
-        return menuData
+        const menuData = await parseMenuUseCase.execute(imageBase64, language);
+        return menuData;
       } catch (err) {
-        const appError = err instanceof AppError
-          ? err
-          : new AppError('UNKNOWN_ERROR', String(err), '發生未知錯誤，請重試')
+        const appError =
+          err instanceof AppError
+            ? err
+            : new AppError(ErrorCode.UNKNOWN_ERROR, String(err), '發生未知錯誤，請重試');
 
-        setError(appError)
-        return null
+        setError(appError);
+        return null;
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     },
-    []
-  )
+    [parseMenuUseCase]
+  );
 
   const clearError = useCallback(() => {
-    setError(null)
-  }, [])
+    setError(null);
+  }, []);
 
-  return { parse, loading, error, clearError }
-}
+  return { parse, loading, error, clearError };
+};
 
 /**
  * Alternative: For Vue, the same logic would be:

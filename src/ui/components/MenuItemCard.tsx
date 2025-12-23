@@ -1,12 +1,12 @@
-import { useState } from 'react'
-import type { MenuItemType, VariantType } from '@types/menu'
+import { useState } from 'react';
+import type { MenuItemType, VariantType } from '@/types/menu';
 
 interface MenuItemCardProps {
-  item: MenuItemType
-  isSelected: boolean
-  onSelect: (itemId: string, selected: boolean) => void
-  onVariantSelect: (itemId: string, variant: VariantType) => void
-  selectedVariant?: VariantType
+  item: MenuItemType;
+  isSelected: boolean;
+  onSelect: (itemId: string, selected: boolean) => void;
+  onVariantSelect: (itemId: string, variant: VariantType) => void;
+  selectedVariant?: VariantType;
 }
 
 export function MenuItemCard({
@@ -18,18 +18,18 @@ export function MenuItemCard({
 }: MenuItemCardProps) {
   const [localSelectedVariant, setLocalSelectedVariant] = useState<VariantType | undefined>(
     selectedVariant
-  )
+  );
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSelect(item.id, e.target.checked)
-  }
+    onSelect(item.id, e.target.checked);
+  };
 
   const handleVariantClick = (variant: VariantType) => {
     // Update both local state and parent callback simultaneously
-    setLocalSelectedVariant(variant)
+    setLocalSelectedVariant(variant);
     // Parent callback should update external state, local state is just for visual feedback
-    onVariantSelect(item.id, variant)
-  }
+    onVariantSelect(item.id, variant);
+  };
 
   return (
     <div
@@ -60,7 +60,8 @@ export function MenuItemCard({
               key={`${item.id}-variant-${index}`}
               onClick={() => handleVariantClick(variant)}
               className={`w-full text-left px-3 py-2 rounded-md border-2 transition-colors ${
-                localSelectedVariant?.spec === variant.spec && localSelectedVariant?.price === variant.price
+                localSelectedVariant?.spec === variant.spec &&
+                localSelectedVariant?.price === variant.price
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-200 hover:border-gray-300'
               }`}
@@ -78,7 +79,6 @@ export function MenuItemCard({
           ))}
         </div>
       </div>
-
     </div>
-  )
+  );
 }

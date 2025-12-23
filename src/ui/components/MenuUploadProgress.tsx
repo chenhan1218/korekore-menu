@@ -11,9 +11,9 @@
  */
 
 interface MenuUploadProgressProps {
-  state: 'idle' | 'compressing' | 'uploading' | 'success' | 'error'
-  error: string | null
-  progress: number
+  state: 'idle' | 'compressing' | 'uploading' | 'success' | 'error';
+  error: string | null;
+  progress: number;
 }
 
 /**
@@ -23,28 +23,15 @@ interface MenuUploadProgressProps {
  * @param error - Error message if state is 'error'
  * @param progress - Progress percentage (0-100)
  */
-export function MenuUploadProgress({
-  state,
-  error,
-  progress,
-}: MenuUploadProgressProps) {
+export function MenuUploadProgress({ state, error, progress }: MenuUploadProgressProps) {
   // Don't render for idle state
   if (state === 'idle') {
-    return <div className="upload-progress hidden" />
+    return <div className="upload-progress hidden" />;
   }
 
-  const isLoading = state === 'compressing' || state === 'uploading'
-  const isSuccess = state === 'success'
-  const isError = state === 'error'
-
-  const stateLabel =
-    state === 'compressing'
-      ? 'Compressing...'
-      : state === 'uploading'
-        ? 'Uploading...'
-        : state === 'success'
-          ? 'Success!'
-          : 'Error'
+  const isLoading = state === 'compressing' || state === 'uploading';
+  const isSuccess = state === 'success';
+  const isError = state === 'error';
 
   return (
     <div className={`upload-progress state-${state}`}>
@@ -224,5 +211,5 @@ export function MenuUploadProgress({
         }
       `}</style>
     </div>
-  )
+  );
 }

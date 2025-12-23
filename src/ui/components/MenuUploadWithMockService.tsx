@@ -9,15 +9,15 @@
  * - Error handling and retry capability
  */
 
-import { useCallback } from 'react'
-import { MenuUploadWithProgress } from './MenuUploadWithProgress'
-import { mockMenuService } from '@/infrastructure/mockMenuService'
-import { MenuItemType } from '@/types/menu'
+import { useCallback } from 'react';
+import { MenuUploadWithProgress } from './MenuUploadWithProgress';
+import { mockMenuScanService } from '@/infrastructure/mockMenuService';
+import type { MenuItemType } from '@/types/menu';
 
 interface MenuUploadWithMockServiceProps {
-  onMenuDataReceived: (menuData: MenuItemType[]) => void
-  onError: (error: string) => void
-  disabled?: boolean
+  onMenuDataReceived: (menuData: MenuItemType[]) => void;
+  onError: (error: string) => void;
+  disabled?: boolean;
 }
 
 /**
@@ -36,29 +36,28 @@ export function MenuUploadWithMockService({
   disabled = false,
 }: MenuUploadWithMockServiceProps) {
   const handleUploadSuccess = useCallback(
-    async (file: File) => {
+    async (_file: File) => {
       try {
         // Call mock menu service to get menu data
-        const menuData = await mockMenuService.scanMenu(file)
+        const menuData = await mockMenuScanService();
 
         // Call success callback with menu data
-        onMenuDataReceived(menuData)
+        onMenuDataReceived(menuData);
       } catch (error) {
         // Handle mock service errors
-        const errorMessage =
-          error instanceof Error ? error.message : 'Failed to fetch menu data'
-        onError(errorMessage)
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch menu data';
+        onError(errorMessage);
       }
     },
     [onMenuDataReceived, onError]
-  )
+  );
 
   const handleError = useCallback(
     (error: string) => {
-      onError(error)
+      onError(error);
     },
     [onError]
-  )
+  );
 
   return (
     <div className="menu-upload-with-mock-service">
@@ -68,5 +67,5 @@ export function MenuUploadWithMockService({
         disabled={disabled}
       />
     </div>
-  )
+  );
 }

@@ -33,8 +33,8 @@ export class AppError extends Error {
     public userMessage: string, // Message to display to user
     public retry: boolean = false // Whether the operation can be retried
   ) {
-    super(message)
-    this.name = 'AppError'
+    super(message);
+    this.name = 'AppError';
   }
 }
 
@@ -42,22 +42,17 @@ export class AppError extends Error {
  * Type guard to check if an error is an AppError
  */
 export const isAppError = (error: unknown): error is AppError => {
-  return error instanceof AppError
-}
+  return error instanceof AppError;
+};
 
 /**
  * Convert any error to AppError
  */
 export const toAppError = (error: unknown): AppError => {
   if (isAppError(error)) {
-    return error
+    return error;
   }
 
-  const message = error instanceof Error ? error.message : String(error)
-  return new AppError(
-    ErrorCode.UNKNOWN_ERROR,
-    message,
-    '發生未知錯誤，請重試',
-    true
-  )
-}
+  const message = error instanceof Error ? error.message : String(error);
+  return new AppError(ErrorCode.UNKNOWN_ERROR, message, '發生未知錯誤，請重試', true);
+};

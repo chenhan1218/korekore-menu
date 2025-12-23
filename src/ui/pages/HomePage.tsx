@@ -8,7 +8,7 @@
  * - Navigation to menu scanning
  */
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 /**
  * HomePage Component
@@ -19,11 +19,11 @@ import { useNavigate } from 'react-router-dom'
  * @returns React component
  */
 export function HomePage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleStartScanning = () => {
-    navigate('/menu-scan')
-  }
+    navigate('/menu-scan');
+  };
 
   return (
     <div
@@ -40,22 +40,14 @@ export function HomePage() {
       <div className="relative z-10 max-w-2xl text-center">
         {/* Logo/Title */}
         <div className="mb-8">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-2">
-            KoreKore
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600">
-            日本餐廳菜單翻譯 AI 工具
-          </p>
-          <p className="text-gray-500 mt-2">
-            不懂日文？只需拍照。
-          </p>
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-2">KoreKore</h1>
+          <p className="text-xl md:text-2xl text-gray-600">日本餐廳菜單翻譯 AI 工具</p>
+          <p className="text-gray-500 mt-2">不懂日文？只需拍照。</p>
         </div>
 
         {/* Main Description */}
         <div className="mb-12 text-left space-y-4">
-          <p className="text-gray-700 text-lg">
-            在日本餐廳點餐不再困擾！KoreKore 幫你：
-          </p>
+          <p className="text-gray-700 text-lg">在日本餐廳點餐不再困擾！KoreKore 幫你：</p>
           <ul className="space-y-3 text-gray-700">
             <li className="flex items-start gap-3">
               <span className="text-2xl text-orange-500">📸</span>
@@ -101,15 +93,11 @@ export function HomePage() {
             <p className="text-sm text-gray-600">菜單項目</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl md:text-3xl font-bold text-orange-500">
-              即時
-            </p>
+            <p className="text-2xl md:text-3xl font-bold text-orange-500">即時</p>
             <p className="text-sm text-gray-600">AI 解析</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl md:text-3xl font-bold text-orange-500">
-              100%
-            </p>
+            <p className="text-2xl md:text-3xl font-bold text-orange-500">100%</p>
             <p className="text-sm text-gray-600">離線支援</p>
           </div>
         </div>
@@ -133,5 +121,5 @@ export function HomePage() {
         <p>Made with ❤️ for travelers in Japan</p>
       </footer>
     </div>
-  )
+  );
 }

@@ -3,10 +3,10 @@
  */
 
 // Error types
-export * from './error'
+export * from './error';
 
 // Menu types
-export * from './menu'
+export * from './menu';
 
 // API types
-export * from './api'
+export * from './api';

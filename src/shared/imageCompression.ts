@@ -7,9 +7,9 @@
  * Maximum file size limit is 15MB (enforced at domain layer)
  */
 
-const COMPRESSION_THRESHOLD = 5 * 1024 * 1024 // 5MB
-const MAX_FILE_SIZE = 15 * 1024 * 1024 // 15MB
-const SUPPORTED_FORMATS = ['image/jpeg', 'image/png']
+const COMPRESSION_THRESHOLD = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
+const SUPPORTED_FORMATS = ['image/jpeg', 'image/png'];
 
 /**
  * Checks if an image needs compression based on file size
@@ -18,7 +18,7 @@ const SUPPORTED_FORMATS = ['image/jpeg', 'image/png']
  * @returns True if file is larger than 5MB and needs compression
  */
 export function isImageCompressionNeeded(imageFile: File): boolean {
-  return imageFile.size > COMPRESSION_THRESHOLD
+  return imageFile.size > COMPRESSION_THRESHOLD;
 }
 
 /**
@@ -34,21 +34,21 @@ export function isImageCompressionNeeded(imageFile: File): boolean {
 export async function compressImage(imageFile: File): Promise<File> {
   // Validate format
   if (!SUPPORTED_FORMATS.includes(imageFile.type)) {
-    throw new Error(`Unsupported image format: ${imageFile.type}`)
+    throw new Error(`Unsupported image format: ${imageFile.type}`);
   }
 
   // Validate file size limit
   if (imageFile.size > MAX_FILE_SIZE) {
-    throw new Error('File size exceeds maximum limit of 15MB')
+    throw new Error('File size exceeds maximum limit of 15MB');
   }
 
   // If file is already within compression threshold, return as-is
   if (!isImageCompressionNeeded(imageFile)) {
-    return imageFile
+    return imageFile;
   }
 
   // Compress the image
-  return await performImageCompression(imageFile)
+  return await performImageCompression(imageFile);
 }
 
 /**
@@ -60,76 +60,76 @@ export async function compressImage(imageFile: File): Promise<File> {
  */
 async function performImageCompression(imageFile: File): Promise<File> {
   // For testing environment: if canvas/Image not available, return mock compressed file
-  if (typeof window === 'undefined' || !window.Image || !window.Canvas) {
+  if (typeof window === 'undefined' || !window.Image || typeof HTMLCanvasElement === 'undefined') {
     // In test environment, create a compressed version by reducing file size
-    const compressionRatio = 0.4 // Simulate 60% compression
-    const compressedSize = Math.floor(imageFile.size * compressionRatio)
-    const compressedData = new Uint8Array(compressedSize)
-    const compressedBlob = new Blob([compressedData], { type: imageFile.type })
+    const compressionRatio = 0.4; // Simulate 60% compression
+    const compressedSize = Math.floor(imageFile.size * compressionRatio);
+    const compressedData = new Uint8Array(compressedSize);
+    const compressedBlob = new Blob([compressedData], { type: imageFile.type });
     return new File([compressedBlob], imageFile.name, {
       type: imageFile.type,
       lastModified: imageFile.lastModified,
-    })
+    });
   }
 
   // Browser environment: use canvas for real image compression
-  const blob = imageFile as unknown as Blob
-  const url = URL.createObjectURL(blob)
+  const blob = imageFile as unknown as Blob;
+  const url = URL.createObjectURL(blob);
 
   return new Promise((resolve, reject) => {
-    const img = new Image()
+    const img = new Image();
 
     img.onload = () => {
       try {
         // Create canvas for rendering
-        const canvas = document.createElement('canvas')
-        canvas.width = img.width
-        canvas.height = img.height
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
 
-        const ctx = canvas.getContext('2d')
+        const ctx = canvas.getContext('2d');
         if (!ctx) {
-          reject(new Error('Failed to get canvas context'))
-          return
+          reject(new Error('Failed to get canvas context'));
+          return;
         }
 
         // Draw image on canvas
-        ctx.drawImage(img, 0, 0)
+        ctx.drawImage(img, 0, 0);
 
         // Determine quality based on file type
-        const quality = imageFile.type === 'image/jpeg' ? 0.85 : 0.9
+        const quality = imageFile.type === 'image/jpeg' ? 0.85 : 0.9;
 
         // Convert canvas to blob with compression
         canvas.toBlob(
           (compressedBlob) => {
-            URL.revokeObjectURL(url)
+            URL.revokeObjectURL(url);
 
             if (!compressedBlob) {
-              reject(new Error('Failed to compress image'))
-              return
+              reject(new Error('Failed to compress image'));
+              return;
             }
 
             // Create new File with same name and compressed blob
             const compressedFile = new File([compressedBlob], imageFile.name, {
               type: imageFile.type,
               lastModified: imageFile.lastModified,
-            })
+            });
 
-            resolve(compressedFile)
+            resolve(compressedFile);
           },
           imageFile.type,
           quality
-        )
+        );
       } catch (error) {
-        URL.revokeObjectURL(url)
-        reject(error)
+        URL.revokeObjectURL(url);
+        reject(error);
       }
-    }
+    };
 
     img.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('Failed to load image'))
-    }
+      URL.revokeObjectURL(url);
+      reject(new Error('Failed to load image'));
+    };
 
-    img.src = url
-  })
+    img.src = url;
+  });
 }

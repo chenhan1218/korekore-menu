@@ -2,4 +2,4 @@
  * Central export point for all Domain use cases
  */
 
-export * from './parseMenuImage'
+export * from './parseMenuImage';

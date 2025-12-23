@@ -9,16 +9,16 @@
  * - Menu state management via Zustand store
  */
 
-import { useState, useCallback } from 'react'
-import { MenuUploadWithMockService } from '@/ui/components/MenuUploadWithMockService'
-import { MenuList } from '@/ui/components/MenuList'
-import { useMenuStore } from '@/domain/stores/menuStore'
-import type { MenuItemType } from '@/types/menu'
+import { useState, useCallback } from 'react';
+import { MenuUploadWithMockService } from '@/ui/components/MenuUploadWithMockService';
+import { MenuList } from '@/ui/components/MenuList';
+import { useMenuStore } from '@/domain/stores/menuStore';
+import type { MenuItemType } from '@/types/menu';
 
 interface MenuScanPageState {
-  isLoading: boolean
-  error: string | null
-  menuData: MenuItemType[] | null
+  isLoading: boolean;
+  error: string | null;
+  menuData: MenuItemType[] | null;
 }
 
 /**
@@ -37,13 +37,13 @@ export function MenuScanPage() {
     isLoading: false,
     error: null,
     menuData: null,
-  })
+  });
 
   // Global state for selected items
-  const selectedItemIds = useMenuStore((state) => state.selectedItemIds)
-  const selectedVariants = useMenuStore((state) => state.selectedVariants)
-  const toggleSelectItem = useMenuStore((state) => state.toggleSelectItem)
-  const selectVariant = useMenuStore((state) => state.selectVariant)
+  const selectedItemIds = useMenuStore((state) => state.selectedItemIds);
+  const selectedVariants = useMenuStore((state) => state.selectedVariants);
+  const toggleSelectItem = useMenuStore((state) => state.toggleSelectItem);
+  const selectVariant = useMenuStore((state) => state.selectVariant);
 
   /**
    * Handle successful menu data retrieval
@@ -53,8 +53,8 @@ export function MenuScanPage() {
       isLoading: false,
       error: null,
       menuData,
-    })
-  }, [])
+    });
+  }, []);
 
   /**
    * Handle upload or service errors
@@ -64,28 +64,28 @@ export function MenuScanPage() {
       ...prev,
       isLoading: false,
       error,
-    }))
-  }, [])
+    }));
+  }, []);
 
   /**
    * Handle item selection/deselection
    */
   const handleSelectItem = useCallback(
     (itemId: string, selected: boolean) => {
-      toggleSelectItem(itemId, selected)
+      toggleSelectItem(itemId, selected);
     },
     [toggleSelectItem]
-  )
+  );
 
   /**
    * Handle variant selection
    */
   const handleSelectVariant = useCallback(
     (itemId: string, variant: any) => {
-      selectVariant(itemId, variant)
+      selectVariant(itemId, variant);
     },
     [selectVariant]
-  )
+  );
 
   return (
     <div
@@ -95,18 +95,14 @@ export function MenuScanPage() {
       <div className="max-w-4xl mx-auto">
         {/* Page Header */}
         <header className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-            KoreKore
-          </h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">KoreKore</h1>
           <p className="text-gray-600">日本餐廳菜單翻譯工具</p>
         </header>
 
         {/* Upload Section */}
         {!pageState.menuData ? (
           <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-              上傳菜單
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">上傳菜單</h2>
 
             {pageState.error && (
               <div
@@ -136,21 +132,17 @@ export function MenuScanPage() {
           <div>
             {/* Results Header */}
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                菜單已解析
-              </h2>
-              <p className="text-gray-600">
-                共找到 {pageState.menuData.length} 個菜項
-              </p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">菜單已解析</h2>
+              <p className="text-gray-600">共找到 {pageState.menuData.length} 個菜項</p>
             </div>
 
             {/* Menu List */}
             <MenuList
-              menuItems={pageState.menuData}
-              selectedItemIds={selectedItemIds}
+              items={pageState.menuData}
+              selectedItems={selectedItemIds}
               selectedVariants={selectedVariants}
               onSelectItem={handleSelectItem}
-              onSelectVariant={handleSelectVariant}
+              onVariantSelect={handleSelectVariant}
             />
 
             {/* Selected Items Summary */}
@@ -161,19 +153,18 @@ export function MenuScanPage() {
                 </h3>
                 <ul className="space-y-2">
                   {selectedItemIds.map((itemId) => {
-                    const item = pageState.menuData!.find((i) => i.id === itemId)
-                    const variant = selectedVariants[itemId]
+                    const item = pageState.menuData!.find((i) => i.id === itemId);
+                    const variant = selectedVariants[itemId];
                     return (
                       <li key={itemId} className="text-blue-800">
                         <span className="font-semibold">{item?.name_zh}</span>
                         {variant && (
                           <span className="text-sm text-blue-700 ml-2">
-                            - {variant.spec} (¥{variant.price}{' '}
-                            {variant.tax_type})
+                            - {variant.spec} (¥{variant.price} {variant.tax_type})
                           </span>
                         )}
                       </li>
-                    )
+                    );
                   })}
                 </ul>
               </div>
@@ -187,7 +178,7 @@ export function MenuScanPage() {
                     isLoading: false,
                     error: null,
                     menuData: null,
-                  })
+                  });
                 }}
                 className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-semibold transition-colors"
               >
@@ -204,5 +195,5 @@ export function MenuScanPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

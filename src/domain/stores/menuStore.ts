@@ -1,20 +1,20 @@
-import { create } from 'zustand'
-import type { VariantType } from '@types/menu'
+import { create } from 'zustand';
+import type { VariantType } from '@/types/menu';
 
 interface MenuStoreState {
   // State
-  selectedItemIds: string[]
-  selectedVariants: Record<string, VariantType>
+  selectedItemIds: string[];
+  selectedVariants: Record<string, VariantType>;
 
   // Actions
-  toggleSelectItem: (itemId: string, selected: boolean) => void
-  selectVariant: (itemId: string, variant: VariantType) => void
-  reset: () => void
+  toggleSelectItem: (itemId: string, selected: boolean) => void;
+  selectVariant: (itemId: string, variant: VariantType) => void;
+  reset: () => void;
 
   // Helpers
-  isItemSelected: (itemId: string) => boolean
-  getSelectedVariant: (itemId: string) => VariantType | undefined
-  getTotalSelectedCount: () => number
+  isItemSelected: (itemId: string) => boolean;
+  getSelectedVariant: (itemId: string) => VariantType | undefined;
+  getTotalSelectedCount: () => number;
 }
 
 export const useMenuStore = create<MenuStoreState>((set, get) => ({
@@ -30,16 +30,16 @@ export const useMenuStore = create<MenuStoreState>((set, get) => ({
         if (!state.selectedItemIds.includes(itemId)) {
           return {
             selectedItemIds: [...state.selectedItemIds, itemId],
-          }
+          };
         }
       } else {
         // Remove from selection
         return {
           selectedItemIds: state.selectedItemIds.filter((id) => id !== itemId),
-        }
+        };
       }
-      return state
-    })
+      return state;
+    });
   },
 
   selectVariant: (itemId: string, variant: VariantType) => {
@@ -48,26 +48,26 @@ export const useMenuStore = create<MenuStoreState>((set, get) => ({
         ...state.selectedVariants,
         [itemId]: variant,
       },
-    }))
+    }));
   },
 
   reset: () => {
     set({
       selectedItemIds: [],
       selectedVariants: {},
-    })
+    });
   },
 
   // Helpers
   isItemSelected: (itemId: string) => {
-    return get().selectedItemIds.includes(itemId)
+    return get().selectedItemIds.includes(itemId);
   },
 
   getSelectedVariant: (itemId: string) => {
-    return get().selectedVariants[itemId]
+    return get().selectedVariants[itemId];
   },
 
   getTotalSelectedCount: () => {
-    return get().selectedItemIds.length
+    return get().selectedItemIds.length;
   },
-}))
+}));

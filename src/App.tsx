@@ -1,7 +1,7 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { HomePage } from '@/ui/pages/HomePage'
-import { MenuScanPage } from '@/ui/pages/MenuScanPage'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HomePage } from '@/ui/pages/HomePage';
+import { MenuScanPage } from '@/ui/pages/MenuScanPage';
 
 /**
  * Main application component
@@ -23,7 +23,7 @@ const App: React.FC = () => {
         </Routes>
       </div>
     </Router>
-  )
-}
+  );
+};
 
-export default App
+export default App;
