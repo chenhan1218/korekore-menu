@@ -16,6 +16,7 @@ All tasks follow a strict lifecycle:
 ### Standard Task Workflow
 
 1. **Select Task:** Choose the next available task from `plan.md` in sequential order
+1.1 **Ask if continue:** Ask the user if we want to continue
 
 2. **Mark In Progress:** Before beginning work, edit `plan.md` and change the task from `[ ]` to `[~]`
 
