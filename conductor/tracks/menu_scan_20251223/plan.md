@@ -97,15 +97,15 @@
     - 「稅込」或「稅拔」標籤清楚顯示 ✓
     - UI 在不同螢幕尺寸上可讀 ✓
 
-- [ ] Task: 實現菜單清單組件 (`MenuList`)
-  - [ ] Write tests: 驗證 20 個菜項卡片正確渲染
-  - [ ] Implement: 在 `src/ui/components/MenuList.tsx` 中建立組件
-  - [ ] 測試應涵蓋：
-    - 所有菜項卡片正確渲染
-    - 空列表時顯示適當消息
-    - 列表滾動順暢
+- [x] Task: 實現菜單清單組件 (`MenuList`) [7aa84ff]
+  - [x] Write tests: 驗證 20 個菜項卡片正確渲染 (8 tests passed)
+  - [x] Implement: 在 `src/ui/components/MenuList.tsx` 中建立組件
+  - [x] 測試應涵蓋：
+    - 所有菜項卡片正確渲染 ✓
+    - 空列表時顯示適當消息 ✓
+    - 列表滾動順暢 ✓
 
-- [ ] Task: 實現菜項勾選與狀態管理
+- [~] Task: 實現菜項勾選與狀態管理
   - [ ] Write tests: 驗證用戶勾選菜項的狀態變化
   - [ ] Implement: 使用 Zustand 建立菜單狀態 store (`src/domain/stores/menuStore.ts`)
   - [ ] 測試應涵蓋：
