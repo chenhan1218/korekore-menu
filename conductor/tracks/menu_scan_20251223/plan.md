@@ -51,10 +51,10 @@
     - 小於 5MB 的圖片保持不變
     - 不支援的格式正確拒絕
 
-- [ ] Task: 實現圖片上傳組件 (`MenuUploadInput`)
-  - [ ] Write tests: 驗證檔案選擇、格式驗證、大小檢查
-  - [ ] Implement: 在 `src/ui/components/MenuUploadInput.tsx` 中建立組件
-  - [ ] 測試應涵蓋：
+- [x] Task: 實現圖片上傳組件 (`MenuUploadInput`) [7b9c9af]
+  - [x] Write tests: 驗證檔案選擇、格式驗證、大小檢查
+  - [x] Implement: 在 `src/ui/components/MenuUploadInput.tsx` 中建立組件
+  - [x] 測試應涵蓋：
     - 支援 JPG/PNG 選擇
     - 拒絕不支援的格式 (.gif, .bmp 等)
     - 檔案 >15MB 時顯示錯誤
