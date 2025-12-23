@@ -18,7 +18,7 @@ export class GeminiAdapter implements GeminiPort {
   private apiKey: string
 
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || import.meta.env['VITE_GEMINI_API_KEY']
+    this.apiKey = apiKey || import.meta.env.VITE_GEMINI_API_KEY
 
     if (!this.apiKey) {
       throw new Error('Gemini API Key is required')
