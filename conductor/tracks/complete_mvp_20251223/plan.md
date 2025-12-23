@@ -177,14 +177,13 @@ TDD 工作流：
 ```
 
 **產出：**
-- [x] FirebaseStorageAdapter 實現 (1e9a914)
-- [x] 單元測試（19 個測試，100% 通過）
-- [x] 錯誤處理邏輯
+- [ ] FirebaseStorageAdapter 實現
+- [ ] Integration 測試（≥ 70%）
+- [ ] 錯誤處理邏輯
 
 **關鍵文件：**
 - `src/infrastructure/adapters/FirebaseStorageAdapter.ts`
 - `src/infrastructure/adapters/__tests__/FirebaseStorageAdapter.test.ts`
-- `src/infrastructure/config/firebase.ts`
 
 ---
 
