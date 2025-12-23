@@ -30,6 +30,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
+    /* Types */
+    "types": ["vite/client"],
+
     /* Path mapping */
     "baseUrl": ".",
     "paths": {
@@ -45,6 +48,5 @@
     }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "tests"],
-  "references": [{ "path": "./tsconfig.app.json" }]
+  "exclude": ["node_modules", "dist"]
 }

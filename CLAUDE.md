@@ -36,6 +36,7 @@ Claude Code 協助本專案時，應以**資深 Product Manager (PM) 與全端�
 - **對話與文件：** 主要使用繁體中文 (台灣) 撰寫，親切自然的語氣
 - **技術專有名詞：** 保留英文原文，例如 Event、Schema、Transaction、Firebase、API、Component 等
 - **程式碼與註解：** 必須使用全英文，包含變數名、函數名、類別名、Code Comments
+- **UI 文字** UI 文字、錯誤訊息須中英雙語
 
 ### 設計原則
 
