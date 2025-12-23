@@ -3,6 +3,31 @@
  */
 
 /**
+ * Tax type for menu variants (稅込 = tax included, 稅拔 = tax excluded)
+ */
+export type TaxType = '稅込' | '稅拔'
+
+/**
+ * Menu item variant with specific spec, price, and tax information
+ */
+export interface VariantType {
+  spec: string // Specification name (e.g., 單點, 定食, 大盛, etc.)
+  price: number // Price as a number
+  tax_type: TaxType // Tax type indicator
+}
+
+/**
+ * Menu item with Japanese name, Chinese translation, and variants
+ * This is the new Menu Scan MVP structure
+ */
+export interface MenuItemType {
+  id: string // Unique identifier (e.g., item_1, item_2)
+  name_jp: string // Japanese menu item name (e.g., 唐揚げ)
+  name_zh: string // Traditional Chinese translation (e.g., 唐揚雞)
+  variants: VariantType[] // Array of variants with specs and prices
+}
+
+/**
  * Single menu item extracted from a menu image
  */
 export interface MenuItem {
