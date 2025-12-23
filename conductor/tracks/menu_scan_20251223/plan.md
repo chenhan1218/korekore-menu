@@ -69,13 +69,13 @@
     - Loading 動畫正常顯示 ✓ (MenuUploadWithProgress: 13 tests)
     - 壓縮進度正確反饋 ✓ (60 total tests passed)
 
-- [~] Task: 整合上傳與 Mock 服務
-  - [~] Write tests: 驗證上傳圖片後立即返回 Mock 數據
-  - [ ] Implement: 在 `MenuUploadWithProgress` 中呼叫 `mockMenuService`
-  - [ ] 測試應涵蓋：
-    - 模擬上傳成功後返回 Mock 數據
-    - 驗證數據結構正確
-    - 異步流程正確處理
+- [x] Task: 整合上傳與 Mock 服務 [ec716ee]
+  - [x] Write tests: 驗證上傳圖片後立即返回 Mock 數據
+  - [x] Implement: 在 `MenuUploadWithMockService` 中呼叫 `mockMenuService`
+  - [x] 測試應涵蓋：
+    - 模擬上傳成功後返回 Mock 數據 ✓ (13 tests passed)
+    - 驗證數據結構正確 ✓ (錯誤處理測試)
+    - 異步流程正確處理 ✓ (整合測試)
 
 - [ ] Task: Phase 2 驗證
   - [ ] 執行完整測試套件
