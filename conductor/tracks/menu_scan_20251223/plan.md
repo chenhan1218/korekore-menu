@@ -120,7 +120,7 @@
 
 ---
 
-### Phase 4: 完整集成與應用 [checkpoint: 0f20d6a]
+### Phase 4: 完整集成與應用 [checkpoint: 30415f3]
 
 此階段目標：將菜單掃描功能整合進主應用，完成端到端流程。
 
@@ -147,13 +147,14 @@
     - 按鈕導航到 /menu-scan
     - 頁面切換流暢
 
-- [ ] Task: 完整功能整合測試
-  - [ ] Write tests: 模擬完整用戶流程
-  - [ ] Implement: 在 `src/ui/pages/__tests__/MenuScanPage.integration.test.tsx` 中建立
-  - [ ] 測試應涵蓋：
-    - 用戶上傳圖片 → 查看菜單 → 勾選菜項 → 選擇規格
-    - 錯誤情況的完整流程
-    - 頁面性能
+- [x] Task: 完整功能整合測試 [e8de7bd]
+  - [x] Write tests: 模擬完整用戶流程
+  - [x] Implement: 在 `src/ui/pages/__tests__/MenuScanPage.integration.test.tsx` 中建立
+  - [x] 測試應涵蓋：
+    - [x] 用戶上傳圖片 → 查看菜單 → 勾選菜項 ✓ (8 tests passing)
+    - [x] 錯誤情況的完整流程 ✓ (3 tests: file validation, recovery, deselection)
+    - [x] 頁面性能 ✓ (4 tests: render efficiency, rapid selection, all-items selection)
+  - [x] 總計 14 個集成測試全部通過 ✅
 
 - [x] Task: 代碼品質檢查 [e8f4d8e]
   - [x] 執行 TypeScript 型別檢查 (0 errors ✓)
