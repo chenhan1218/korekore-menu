@@ -60,8 +60,8 @@
     - 檔案 >15MB 時顯示錯誤
     - 成功選擇後正確回傳檔案
 
-- [ ] Task: 實現上傳進度反饋
-  - [ ] Write tests: 驗證上傳狀態管理 (idle, compressing, uploading, success, error)
+- [~] Task: 實現上傳進度反饋
+  - [~] Write tests: 驗證上傳狀態管理 (idle, compressing, uploading, success, error)
   - [ ] Implement: 上傳過程中顯示加載狀態、成功/失敗提示
   - [ ] 測試應涵蓋：
     - 狀態正確轉換
