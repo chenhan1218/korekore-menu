@@ -37,11 +37,11 @@ export class MenuScanDomain {
    * Process menu image and extract menu items
    * Currently delegates to mock service
    *
-   * @param imageFile - The image file to process
+   * @param _imageFile - The image file to process (not used in MVP, will be used with Gemini API)
    * @returns Promise resolving to array of menu items
    * @private
    */
-  private async processMenuImage(imageFile: File): Promise<MenuItemType[]> {
+  private async processMenuImage(_imageFile: File): Promise<MenuItemType[]> {
     // In MVP phase, use mock service
     // This will be replaced with Gemini API integration
     return await mockMenuScanService()
@@ -135,7 +135,7 @@ export class MenuScanDomain {
    * @throws Error if validation fails
    * @private
    */
-  private validateVariant(variant: any, itemIndex: number, variantIndex: number): void {
+  private validateVariant(variant: Record<string, unknown>, itemIndex: number, variantIndex: number): void {
     const path = `Item ${itemIndex}, Variant ${variantIndex}`
 
     if (!variant.spec || typeof variant.spec !== 'string') {
@@ -147,7 +147,7 @@ export class MenuScanDomain {
     }
 
     const validTaxTypes = ['稅込', '稅拔']
-    if (!validTaxTypes.includes(variant.tax_type)) {
+    if (!validTaxTypes.includes(variant.tax_type as string)) {
       throw new Error(`${path}: Invalid tax_type. Must be '稅込' or '稅拔'`)
     }
   }
