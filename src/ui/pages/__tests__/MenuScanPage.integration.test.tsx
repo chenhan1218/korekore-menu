@@ -186,7 +186,6 @@ describe('MenuScanPage Integration Tests', () => {
     });
 
     it('should display 20+ menu items after upload', async () => {
-      const user = userEvent.setup();
       renderWithRouter(<MenuScanPage />);
 
       // Simulate file selection
@@ -224,7 +223,7 @@ describe('MenuScanPage Integration Tests', () => {
 
       // Select item
       const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[0]);
+      await user.click(checkboxes[0] as Element);
 
       // Verify selection summary appears
       await waitFor(() => {
@@ -248,9 +247,9 @@ describe('MenuScanPage Integration Tests', () => {
 
       // Select multiple items
       const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[0]);
-      await user.click(checkboxes[1]);
-      await user.click(checkboxes[2]);
+      await user.click(checkboxes[0] as Element);
+      await user.click(checkboxes[1] as Element);
+      await user.click(checkboxes[2] as Element);
 
       // Verify count shows 3
       await waitFor(() => {
@@ -274,7 +273,7 @@ describe('MenuScanPage Integration Tests', () => {
 
       // Select item
       const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[0]);
+      await user.click(checkboxes[0] as Element);
 
       // Confirm button should be enabled
       const confirmBtn = screen.getByRole('button', { name: /確認點餐/i });
@@ -297,11 +296,11 @@ describe('MenuScanPage Integration Tests', () => {
 
       // Select item
       const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[0]);
+      await user.click(checkboxes[0] as Element);
 
       // Click upload new menu button
       const uploadNewBtn = screen.getByRole('button', { name: /上傳新菜單/i });
-      await user.click(uploadNewBtn);
+      await user.click(uploadNewBtn as Element);
 
       // Should return to upload state
       expect(screen.getByRole('heading', { name: /上傳菜單/i })).toBeTruthy();
@@ -328,7 +327,6 @@ describe('MenuScanPage Integration Tests', () => {
 
   describe('Error Handling Flow', () => {
     it('should display error when file input validation fails', async () => {
-      const user = userEvent.setup();
       renderWithRouter(<MenuScanPage />);
 
       // Try to select an invalid file (too large)
@@ -383,17 +381,17 @@ describe('MenuScanPage Integration Tests', () => {
 
       // Select and deselect items
       const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[0]);
-      await user.click(checkboxes[1]);
+      await user.click(checkboxes[0] as Element);
+      await user.click(checkboxes[1] as Element);
 
       // Deselect first item
-      await user.click(checkboxes[0]);
+      await user.click(checkboxes[0] as Element);
 
       // Should show only 1 item selected
       expect(screen.getByText(/已選擇菜項 \(1\)/i)).toBeTruthy();
 
       // Deselect remaining item
-      await user.click(checkboxes[1]);
+      await user.click(checkboxes[1] as Element);
 
       // Selection summary should disappear when no items selected
       const summary = screen.queryByText(/已選擇菜項/i);
@@ -442,7 +440,7 @@ describe('MenuScanPage Integration Tests', () => {
 
       // Rapid selections
       for (let i = 0; i < Math.min(5, checkboxes.length); i++) {
-        await user.click(checkboxes[i]);
+        await user.click(checkboxes[i] as Element);
       }
 
       const selectionTime = performance.now() - startTime;
@@ -471,7 +469,7 @@ describe('MenuScanPage Integration Tests', () => {
 
       // Select all items
       for (let i = 0; i < checkboxes.length; i++) {
-        await user.click(checkboxes[i]);
+        await user.click(checkboxes[i] as Element);
       }
 
       // Should show all selected
