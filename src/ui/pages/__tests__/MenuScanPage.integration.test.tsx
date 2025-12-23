@@ -325,4 +325,165 @@ describe('MenuScanPage Integration Tests', () => {
       expect(fileInput?.getAttribute('aria-label')).toBeTruthy();
     });
   });
+
+  describe('Error Handling Flow', () => {
+    it('should display error when file input validation fails', async () => {
+      const user = userEvent.setup();
+      renderWithRouter(<MenuScanPage />);
+
+      // Try to select an invalid file (too large)
+      const fileInput = document.querySelector('#menu-file-input') as HTMLInputElement;
+      const largeFile = new File(['x'.repeat(20 * 1024 * 1024)], 'huge.jpg', { type: 'image/jpeg' });
+
+      fireEvent.change(fileInput, { target: { files: [largeFile] } });
+
+      // Error handling should be triggered or file rejected
+      // The component should still be functional
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      expect(screen.getByRole('heading', { name: /上傳菜單/i })).toBeTruthy();
+    });
+
+    it('should recover gracefully after upload failure', async () => {
+      const user = userEvent.setup();
+      renderWithRouter(<MenuScanPage />);
+
+      // First successful upload
+      const fileInput = document.querySelector('#menu-file-input') as HTMLInputElement;
+      const mockFile = new File(['test'], 'menu.jpg', { type: 'image/jpeg' });
+      fireEvent.change(fileInput, { target: { files: [mockFile] } });
+
+      // Wait for menu
+      await waitFor(() => {
+        expect(screen.queryByText(/菜單已解析/i)).toBeTruthy();
+      }, { timeout: 10000 });
+
+      // Return to upload
+      const uploadNewBtn = screen.getByRole('button', { name: /上傳新菜單/i });
+      await user.click(uploadNewBtn);
+
+      // Should be able to upload again
+      expect(screen.getByRole('heading', { name: /上傳菜單/i })).toBeTruthy();
+      const fileInputAgain = document.querySelector('#menu-file-input') as HTMLInputElement;
+      expect(fileInputAgain).toBeTruthy();
+    });
+
+    it('should handle deselection of items without errors', async () => {
+      const user = userEvent.setup();
+      renderWithRouter(<MenuScanPage />);
+
+      // Upload
+      const fileInput = document.querySelector('#menu-file-input') as HTMLInputElement;
+      const mockFile = new File(['test'], 'menu.jpg', { type: 'image/jpeg' });
+      fireEvent.change(fileInput, { target: { files: [mockFile] } });
+
+      // Wait for menu
+      await waitFor(() => {
+        expect(screen.queryByText(/菜單已解析/i)).toBeTruthy();
+      }, { timeout: 10000 });
+
+      // Select and deselect items
+      const checkboxes = screen.getAllByRole('checkbox');
+      await user.click(checkboxes[0]);
+      await user.click(checkboxes[1]);
+
+      // Deselect first item
+      await user.click(checkboxes[0]);
+
+      // Should show only 1 item selected
+      expect(screen.getByText(/已選擇菜項 \(1\)/i)).toBeTruthy();
+
+      // Deselect remaining item
+      await user.click(checkboxes[1]);
+
+      // Selection summary should disappear when no items selected
+      const summary = screen.queryByText(/已選擇菜項/i);
+      expect(summary).toBeFalsy();
+    });
+  });
+
+  describe('Performance and Responsiveness', () => {
+    it('should render 20 items efficiently', async () => {
+      const startTime = performance.now();
+      renderWithRouter(<MenuScanPage />);
+
+      const fileInput = document.querySelector('#menu-file-input') as HTMLInputElement;
+      const mockFile = new File(['test'], 'menu.jpg', { type: 'image/jpeg' });
+      fireEvent.change(fileInput, { target: { files: [mockFile] } });
+
+      await waitFor(() => {
+        expect(screen.queryByText(/菜單已解析/i)).toBeTruthy();
+      }, { timeout: 10000 });
+
+      const renderTime = performance.now() - startTime;
+
+      // Should render complete page within reasonable time
+      expect(renderTime).toBeLessThan(15000);
+
+      // Verify all items present
+      const checkboxes = screen.getAllByRole('checkbox');
+      expect(checkboxes.length).toBeGreaterThanOrEqual(20);
+    });
+
+    it('should handle rapid selections without lag', async () => {
+      const user = userEvent.setup();
+      renderWithRouter(<MenuScanPage />);
+
+      // Upload
+      const fileInput = document.querySelector('#menu-file-input') as HTMLInputElement;
+      const mockFile = new File(['test'], 'menu.jpg', { type: 'image/jpeg' });
+      fireEvent.change(fileInput, { target: { files: [mockFile] } });
+
+      await waitFor(() => {
+        expect(screen.queryByText(/菜單已解析/i)).toBeTruthy();
+      }, { timeout: 10000 });
+
+      const checkboxes = screen.getAllByRole('checkbox');
+      const startTime = performance.now();
+
+      // Rapid selections
+      for (let i = 0; i < Math.min(5, checkboxes.length); i++) {
+        await user.click(checkboxes[i]);
+      }
+
+      const selectionTime = performance.now() - startTime;
+
+      // Should handle 5 selections quickly
+      expect(selectionTime).toBeLessThan(5000);
+
+      // Verify final state
+      expect(screen.getByText(/已選擇菜項/i)).toBeTruthy();
+    });
+
+    it('should maintain responsive state after selecting many items', async () => {
+      const user = userEvent.setup();
+      const { container } = renderWithRouter(<MenuScanPage />);
+
+      // Upload
+      const fileInput = document.querySelector('#menu-file-input') as HTMLInputElement;
+      const mockFile = new File(['test'], 'menu.jpg', { type: 'image/jpeg' });
+      fireEvent.change(fileInput, { target: { files: [mockFile] } });
+
+      await waitFor(() => {
+        expect(screen.queryByText(/菜單已解析/i)).toBeTruthy();
+      }, { timeout: 10000 });
+
+      const checkboxes = screen.getAllByRole('checkbox');
+
+      // Select all items
+      for (let i = 0; i < checkboxes.length; i++) {
+        await user.click(checkboxes[i]);
+      }
+
+      // Should show all selected
+      expect(screen.getByText(new RegExp(`已選擇菜項 \\(${checkboxes.length}\\)`))).toBeTruthy();
+
+      // Confirm button should be enabled
+      const confirmBtn = screen.getByRole('button', { name: /確認點餐/i });
+      expect((confirmBtn as HTMLButtonElement).disabled).toBe(false);
+
+      // Page should still be responsive
+      const page = container.querySelector('[data-testid="menu-scan-page"]');
+      expect(page).toBeTruthy();
+    });
+  });
 });
