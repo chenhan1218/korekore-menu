@@ -6,7 +6,8 @@
       "Bash(ls:*)",
       "Bash(npm run type-check:*)",
       "Bash(CI=true npm test:*)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "Bash(CI=true npm run test:coverage)"
     ]
   }
 }
