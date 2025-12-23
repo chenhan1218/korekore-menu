@@ -35,11 +35,3 @@ This file tracks all major work items. Each track has its own spec and plan.
 - 無新增測試失敗
 
 ---
-
-## [ ] Track: 設置 GitHub Actions CI Workflow
-
-*Link: [conductor/tracks/setup_github_ci_20251223/](conductor/tracks/setup_github_ci_20251223/)*
-
-**描述**：建立自動化 CI pipeline，在每次 push 和 PR 時執行測試、代碼檢查、構建驗證和覆蓋率報告。
-
----
