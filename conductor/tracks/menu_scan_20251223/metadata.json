@@ -1,0 +1,37 @@
+{
+  "track_id": "menu_scan_20251223",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2025-12-23T00:00:00Z",
+  "description": "實現菜單掃描功能 (Menu Scan) - 用戶上傳菜單圖片後，系統回傳 Mock 菜單數據。支援圖片自動壓縮（超 5MB 自動壓縮）、菜單展示、規格選擇與勾選功能。",
+  "phases": 4,
+  "estimated_tasks": 16,
+  "key_features": [
+    "圖片上傳（JPG/PNG，≤15MB，自動壓縮超 5MB）",
+    "Mock 菜單數據服務（20 個菜項，含規格與價格）",
+    "菜單卡片展示組件",
+    "用戶勾選與規格選擇互動",
+    "完整的端到端流程集成"
+  ],
+  "tech_stack": [
+    "React 18.2.0",
+    "TypeScript 5.3.3",
+    "Zustand 4.4.0",
+    "TailwindCSS 3.3.6",
+    "Vitest 1.1.0",
+    "React Testing Library 14.1.2"
+  ],
+  "architecture": {
+    "domain": "src/domain/menuScan.ts, src/domain/stores/menuStore.ts",
+    "infrastructure": "src/infrastructure/mockMenuService.ts",
+    "ui": "src/ui/components/MenuUploadInput.tsx, MenuItemCard.tsx, MenuList.tsx; src/ui/pages/MenuScanPage.tsx",
+    "types": "src/types/menu.ts",
+    "shared": "src/shared/imageCompression.ts"
+  },
+  "design_decisions": [
+    "圖片限制 15MB + 前端自動壓縮，平衡用戶體驗和後端效率",
+    "Mock 數據優先，為後續 Gemini API 對接做準備",
+    "Clean Architecture 分層，業務邏輯與 UI 分離",
+    "TDD 開發，>80% 代碼覆蓋率"
+  ]
+}
