@@ -4,7 +4,7 @@ This file tracks all major work items. Each track has its own spec and plan.
 
 ---
 
-## [ ] Track: 實現菜單掃描功能 (Menu Scan MVP)
+## [~] Track: 實現菜單掃描功能 (Menu Scan MVP) - Phase 2
 
 *Link: [conductor/tracks/menu_scan_20251223/](conductor/tracks/menu_scan_20251223/)*
 
