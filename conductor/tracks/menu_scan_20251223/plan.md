@@ -88,7 +88,7 @@
 
 此階段目標：實現菜單卡片展示，支援規格選擇和勾選功能。
 
-- [ ] Task: 實現菜單項目卡片組件 (`MenuItemCard`)
+- [~] Task: 實現菜單項目卡片組件 (`MenuItemCard`)
   - [ ] Write tests: 驗證菜項信息正確展示
   - [ ] Implement: 在 `src/ui/components/MenuItemCard.tsx` 中建立組件
   - [ ] 測試應涵蓋：
