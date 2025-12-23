@@ -60,14 +60,14 @@
     - 檔案 >15MB 時顯示錯誤
     - 成功選擇後正確回傳檔案
 
-- [~] Task: 實現上傳進度反饋
-  - [~] Write tests: 驗證上傳狀態管理 (idle, compressing, uploading, success, error)
-  - [ ] Implement: 上傳過程中顯示加載狀態、成功/失敗提示
-  - [ ] 測試應涵蓋：
-    - 狀態正確轉換
-    - 錯誤消息友善清晰
-    - Loading 動畫正常顯示
-    - 壓縮進度正確反饋
+- [x] Task: 實現上傳進度反饋 [6dd6197]
+  - [x] Write tests: 驗證上傳狀態管理 (idle, compressing, uploading, success, error)
+  - [x] Implement: 上傳過程中顯示加載狀態、成功/失敗提示
+  - [x] 測試應涵蓋：
+    - 狀態正確轉換 ✓ (useMenuUploadState: 25 tests)
+    - 錯誤消息友善清晰 ✓ (MenuUploadProgress: 22 tests)
+    - Loading 動畫正常顯示 ✓ (MenuUploadWithProgress: 13 tests)
+    - 壓縮進度正確反饋 ✓ (60 total tests passed)
 
 - [ ] Task: 整合上傳與 Mock 服務
   - [ ] Write tests: 驗證上傳圖片後立即返回 Mock 數據
