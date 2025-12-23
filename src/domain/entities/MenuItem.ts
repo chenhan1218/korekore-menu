@@ -6,12 +6,12 @@
  */
 
 export interface MenuItem {
-  readonly id: string // Unique identifier (UUID or similar)
-  readonly name: string // Original menu item name (e.g., 天婦羅)
-  readonly name_zh_TW: string // Traditional Chinese translation + brief taste description
-  readonly price: string // Price in original format (e.g., ¥1500)
-  readonly description?: string // Optional additional description
-  readonly image?: string // Optional image URL for the dish
+  readonly id: string; // Unique identifier (UUID or similar)
+  readonly name: string; // Original menu item name (e.g., 天婦羅)
+  readonly name_zh_TW: string; // Traditional Chinese translation + brief taste description
+  readonly price: string; // Price in original format (e.g., ¥1500)
+  readonly description?: string; // Optional additional description
+  readonly image?: string; // Optional image URL for the dish
 }
 
 /**
@@ -34,7 +34,7 @@ export const createMenuItem = (
   image?: string
 ): MenuItem => {
   if (!id || !name || !name_zh_TW || !price) {
-    throw new Error('MenuItem requires id, name, name_zh_TW, and price')
+    throw new Error('MenuItem requires id, name, name_zh_TW, and price');
   }
 
   return {
@@ -44,5 +44,5 @@ export const createMenuItem = (
     price,
     ...(description && { description }),
     ...(image && { image }),
-  }
-}
+  };
+};

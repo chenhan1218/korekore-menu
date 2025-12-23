@@ -3,7 +3,7 @@
  * Provides mock menu items for Menu Scan MVP testing
  */
 
-import type { MenuItemType } from '@/types/menu'
+import type { MenuItemType } from '@/types/menu';
 
 /**
  * Creates and returns 20 mock menu items with realistic Japanese restaurant data
@@ -43,9 +43,7 @@ export function createMockMenuItems(): MenuItemType[] {
       id: 'item_4',
       name_jp: 'テンプラ',
       name_zh: '天婦羅',
-      variants: [
-        { spec: '單點', price: 600, tax_type: '稅込' },
-      ],
+      variants: [{ spec: '單點', price: 600, tax_type: '稅込' }],
     },
     {
       id: 'item_5',
@@ -78,9 +76,7 @@ export function createMockMenuItems(): MenuItemType[] {
       id: 'item_8',
       name_jp: 'トンカツ',
       name_zh: '豬排',
-      variants: [
-        { spec: '定食', price: 950, tax_type: '稅込' },
-      ],
+      variants: [{ spec: '定食', price: 950, tax_type: '稅込' }],
     },
     {
       id: 'item_9',
@@ -113,9 +109,7 @@ export function createMockMenuItems(): MenuItemType[] {
       id: 'item_12',
       name_jp: '漬物',
       name_zh: '漬物',
-      variants: [
-        { spec: '小盤', price: 150, tax_type: '稅込' },
-      ],
+      variants: [{ spec: '小盤', price: 150, tax_type: '稅込' }],
     },
     {
       id: 'item_13',
@@ -139,9 +133,7 @@ export function createMockMenuItems(): MenuItemType[] {
       id: 'item_15',
       name_jp: 'シュウマイ',
       name_zh: '燒賣',
-      variants: [
-        { spec: '4個', price: 350, tax_type: '稅込' },
-      ],
+      variants: [{ spec: '4個', price: 350, tax_type: '稅込' }],
     },
     {
       id: 'item_16',
@@ -174,9 +166,7 @@ export function createMockMenuItems(): MenuItemType[] {
       id: 'item_19',
       name_jp: '唐揚げチーズ',
       name_zh: '起司唐揚',
-      variants: [
-        { spec: '單點', price: 600, tax_type: '稅込' },
-      ],
+      variants: [{ spec: '單點', price: 600, tax_type: '稅込' }],
     },
     {
       id: 'item_20',
@@ -187,7 +177,7 @@ export function createMockMenuItems(): MenuItemType[] {
         { spec: 'ビーフ', price: 900, tax_type: '稅込' },
       ],
     },
-  ]
+  ];
 }
 
 /**
@@ -196,9 +186,9 @@ export function createMockMenuItems(): MenuItemType[] {
  */
 export async function mockMenuScanService(): Promise<MenuItemType[]> {
   // Simulate async operation (would be API call in real implementation)
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(createMockMenuItems())
-    }, 100)
-  })
+      resolve(createMockMenuItems());
+    }, 100);
+  });
 }

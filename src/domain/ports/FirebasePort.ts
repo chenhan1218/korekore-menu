@@ -5,7 +5,7 @@
  * Firestore data storage and Cloud Storage image uploads.
  */
 
-import { MenuData } from '../entities/MenuData'
+import { MenuData } from '../entities/MenuData';
 
 export interface FirebasePort {
   /**
@@ -16,7 +16,7 @@ export interface FirebasePort {
    * @returns Menu document ID
    * @throws AppError - When save operation fails
    */
-  saveMenu(userId: string, menu: MenuData): Promise<string>
+  saveMenu(userId: string, menu: MenuData): Promise<string>;
 
   /**
    * Get user's menu history from Firebase
@@ -25,7 +25,7 @@ export interface FirebasePort {
    * @returns Array of user's menus sorted by upload time
    * @throws AppError - When retrieval fails
    */
-  getUserMenus(userId: string): Promise<MenuData[]>
+  getUserMenus(userId: string): Promise<MenuData[]>;
 
   /**
    * Delete a menu record from Firebase
@@ -34,7 +34,7 @@ export interface FirebasePort {
    * @param menuId - Menu document ID
    * @throws AppError - When deletion fails
    */
-  deleteMenu(userId: string, menuId: string): Promise<void>
+  deleteMenu(userId: string, menuId: string): Promise<void>;
 
   /**
    * Save user preferences (language, settings, etc)
@@ -43,7 +43,7 @@ export interface FirebasePort {
    * @param preferences - User preferences object
    * @throws AppError - When save operation fails
    */
-  saveUserPreferences(userId: string, preferences: Record<string, unknown>): Promise<void>
+  saveUserPreferences(userId: string, preferences: Record<string, unknown>): Promise<void>;
 
   /**
    * Get user preferences
@@ -52,5 +52,5 @@ export interface FirebasePort {
    * @returns User preferences object
    * @throws AppError - When retrieval fails
    */
-  getUserPreferences(userId: string): Promise<Record<string, unknown>>
+  getUserPreferences(userId: string): Promise<Record<string, unknown>>;
 }

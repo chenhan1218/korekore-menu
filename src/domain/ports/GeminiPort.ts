@@ -6,7 +6,7 @@
  * The actual implementation lives in Infrastructure layer (GeminiAdapter).
  */
 
-import { MenuItem } from '../entities/MenuItem'
+import { MenuItem } from '../entities/MenuItem';
 
 export interface GeminiPort {
   /**
@@ -17,8 +17,5 @@ export interface GeminiPort {
    * @returns Array of parsed menu items
    * @throws AppError - When parsing fails
    */
-  parseImage(
-    imageBase64: string,
-    language?: 'zh_TW' | 'en'
-  ): Promise<MenuItem[]>
+  parseImage(imageBase64: string, language?: 'zh_TW' | 'en'): Promise<MenuItem[]>;
 }

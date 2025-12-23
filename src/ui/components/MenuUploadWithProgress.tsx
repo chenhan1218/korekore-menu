@@ -9,15 +9,15 @@
  * - Provides callbacks for success and error cases
  */
 
-import { useCallback } from 'react'
-import { MenuUploadInput } from './MenuUploadInput'
-import { MenuUploadProgress } from './MenuUploadProgress'
-import { useMenuUploadState } from '@/ui/hooks/useMenuUploadState'
+import { useCallback } from 'react';
+import { MenuUploadInput } from './MenuUploadInput';
+import { MenuUploadProgress } from './MenuUploadProgress';
+import { useMenuUploadState } from '@/ui/hooks/useMenuUploadState';
 
 interface MenuUploadWithProgressProps {
-  onSuccess: (file: File) => void
-  onError: (error: string) => void
-  disabled?: boolean
+  onSuccess: (file: File) => void;
+  onError: (error: string) => void;
+  disabled?: boolean;
 }
 
 /**
@@ -35,65 +35,64 @@ export function MenuUploadWithProgress({
   onError,
   disabled = false,
 }: MenuUploadWithProgressProps) {
-  const uploadState = useMenuUploadState()
+  const uploadState = useMenuUploadState();
 
   const handleFileSelect = useCallback(
     (file: File) => {
       // Start compression state
-      uploadState.startCompression()
+      uploadState.startCompression();
 
       // Simulate compression progress
-      let progress = 0
+      let progress = 0;
       const compressionInterval = setInterval(() => {
-        progress += Math.random() * 30
+        progress += Math.random() * 30;
         if (progress > 100) {
-          progress = 100
-          clearInterval(compressionInterval)
+          progress = 100;
+          clearInterval(compressionInterval);
 
           // Move to uploading state
-          uploadState.startUploading()
+          uploadState.startUploading();
 
           // Simulate upload progress
-          let uploadProgress = 0
+          let uploadProgress = 0;
           const uploadInterval = setInterval(() => {
-            uploadProgress += Math.random() * 25
+            uploadProgress += Math.random() * 25;
             if (uploadProgress > 100) {
-              uploadProgress = 100
-              clearInterval(uploadInterval)
+              uploadProgress = 100;
+              clearInterval(uploadInterval);
 
               // Complete successfully
-              uploadState.completeSuccess()
+              uploadState.completeSuccess();
 
               // Call success callback
               setTimeout(() => {
-                onSuccess(file)
-              }, 500)
+                onSuccess(file);
+              }, 500);
             } else {
-              uploadState.setProgress(uploadProgress)
+              uploadState.setProgress(uploadProgress);
             }
-          }, 300)
+          }, 300);
         } else {
-          uploadState.setProgress(progress)
+          uploadState.setProgress(progress);
         }
-      }, 300)
+      }, 300);
     },
     [uploadState, onSuccess]
-  )
+  );
 
   const handleError = useCallback(
     (error: string) => {
-      uploadState.setError(error)
-      onError(error)
+      uploadState.setError(error);
+      onError(error);
     },
     [uploadState, onError]
-  )
+  );
 
   const handleReset = useCallback(() => {
-    uploadState.reset()
-  }, [uploadState])
+    uploadState.reset();
+  }, [uploadState]);
 
-  const isUploadInProgress =
-    uploadState.isCompressing || uploadState.isUploading
+  const isUploadInProgress = uploadState.isCompressing || uploadState.isUploading;
 
   return (
     <div className="menu-upload-with-progress">
@@ -105,7 +104,7 @@ export function MenuUploadWithProgress({
             onError={handleError}
             isLoading={isUploadInProgress}
             disabled={disabled || isUploadInProgress}
-            errorMessage={uploadState.isError ? uploadState.error : undefined}
+            errorMessage={uploadState.isError && uploadState.error ? uploadState.error : undefined}
           />
         </>
       )}
@@ -120,11 +119,7 @@ export function MenuUploadWithProgress({
       {/* Retry button for success or error states */}
       {(uploadState.isSuccess || uploadState.isError) && (
         <div className="upload-actions">
-          <button
-            onClick={handleReset}
-            className="retry-button"
-            aria-label="Upload another file"
-          >
+          <button onClick={handleReset} className="retry-button" aria-label="Upload another file">
             Upload Another
           </button>
         </div>
@@ -184,5 +179,5 @@ export function MenuUploadWithProgress({
         }
       `}</style>
     </div>
-  )
+  );
 }

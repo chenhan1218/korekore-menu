@@ -12,7 +12,7 @@ export interface LocalStoragePort {
    * @param key - Storage key
    * @param value - Data to store (will be JSON serialized)
    */
-  set(key: string, value: unknown): Promise<void>
+  set(key: string, value: unknown): Promise<void>;
 
   /**
    * Retrieve data from local storage
@@ -20,31 +20,31 @@ export interface LocalStoragePort {
    * @param key - Storage key
    * @returns Stored data or null if not found
    */
-  get<T>(key: string): Promise<T | null>
+  get<T>(key: string): Promise<T | null>;
 
   /**
    * Remove data from local storage
    *
    * @param key - Storage key
    */
-  remove(key: string): Promise<void>
+  remove(key: string): Promise<void>;
 
   /**
    * Clear all local storage
    */
-  clear(): Promise<void>
+  clear(): Promise<void>;
 
   /**
    * Get all keys in local storage
    *
    * @returns Array of storage keys
    */
-  keys(): Promise<string[]>
+  keys(): Promise<string[]>;
 
   /**
    * Get size of local storage usage (in bytes)
    *
    * @returns Used bytes
    */
-  getSize(): Promise<number>
+  getSize(): Promise<number>;
 }

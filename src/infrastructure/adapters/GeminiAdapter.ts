@@ -5,9 +5,9 @@
  * This is where framework-specific dependencies (Firebase, Google AI) live.
  */
 
-import { GeminiPort } from '@/domain/ports'
-import { MenuItem, createMenuItem } from '@/domain/entities'
-import { AppError, ErrorCode } from '@/shared/types'
+import { GeminiPort } from '@/domain/ports';
+import { MenuItem } from '@/domain/entities';
+import { AppError, ErrorCode } from '@/shared/types';
 
 /**
  * Gemini API adapter implementation
@@ -15,27 +15,24 @@ import { AppError, ErrorCode } from '@/shared/types'
  * Converts Gemini API responses into Domain entities
  */
 export class GeminiAdapter implements GeminiPort {
-  private apiKey: string
+  private apiKey: string;
 
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || import.meta.env.VITE_GEMINI_API_KEY
+    this.apiKey = apiKey || import.meta.env.VITE_GEMINI_API_KEY;
 
     if (!this.apiKey) {
-      throw new Error('Gemini API Key is required')
+      throw new Error('Gemini API Key is required');
     }
   }
 
-  async parseImage(
-    imageBase64: string,
-    language: 'zh_TW' | 'en' = 'zh_TW'
-  ): Promise<MenuItem[]> {
+  async parseImage(imageBase64: string, _language: 'zh_TW' | 'en' = 'zh_TW'): Promise<MenuItem[]> {
     try {
       // TODO: Implement actual Gemini API call
       // This is a placeholder that will be replaced with real implementation
       // when @google/generative-ai is integrated
 
       // For now, return empty array to match interface
-      return []
+      return [];
 
       /*
       // Example implementation (pseudocode):
@@ -76,7 +73,7 @@ export class GeminiAdapter implements GeminiPort {
       */
     } catch (error) {
       if (error instanceof AppError) {
-        throw error
+        throw error;
       }
 
       if (error instanceof SyntaxError) {
@@ -85,7 +82,7 @@ export class GeminiAdapter implements GeminiPort {
           `Failed to parse Gemini response: ${error.message}`,
           'AI 響應解析失敗，請重試',
           true
-        )
+        );
       }
 
       throw new AppError(
@@ -93,7 +90,7 @@ export class GeminiAdapter implements GeminiPort {
         `Gemini API error: ${error instanceof Error ? error.message : 'Unknown'}`,
         'AI 服務暫時不可用，請稍後重試',
         true
-      )
+      );
     }
   }
 
@@ -119,7 +116,7 @@ export class GeminiAdapter implements GeminiPort {
 要求：
 1. 每個菜單項目必須包含：id, name, name_zh_TW, price
 2. 返回所有找到的菜單項目
-`
+`;
     }
 
     return `
@@ -139,7 +136,7 @@ Please analyze this menu image and return menu data in JSON format:
 Requirements:
 1. Each item must include: id, name, name_zh_TW, price
 2. Return all found menu items
-`
+`;
   }
 
   /**
@@ -147,13 +144,13 @@ Requirements:
    */
   private validateResponse(data: any): asserts data is { items: MenuItem[] } {
     if (!data.items || !Array.isArray(data.items)) {
-      throw new Error('Response missing items array')
+      throw new Error('Response missing items array');
     }
 
     data.items.forEach((item: any, index: number) => {
       if (!item.id || !item.name || !item.name_zh_TW || item.price === undefined) {
-        throw new Error(`Invalid item at index ${index}: missing required fields`)
+        throw new Error(`Invalid item at index ${index}: missing required fields`);
       }
-    })
+    });
   }
 }

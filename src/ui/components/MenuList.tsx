@@ -1,12 +1,12 @@
-import { MenuItemCard } from './MenuItemCard'
-import type { MenuItemType, VariantType } from '@types/menu'
+import { MenuItemCard } from './MenuItemCard';
+import type { MenuItemType, VariantType } from '@/types/menu';
 
 interface MenuListProps {
-  items: MenuItemType[]
-  selectedItems: string[]
-  onSelectItem: (itemId: string, selected: boolean) => void
-  onVariantSelect: (itemId: string, variant: VariantType) => void
-  selectedVariants?: Record<string, VariantType>
+  items: MenuItemType[];
+  selectedItems: string[];
+  onSelectItem: (itemId: string, selected: boolean) => void;
+  onVariantSelect: (itemId: string, variant: VariantType) => void;
+  selectedVariants?: Record<string, VariantType>;
 }
 
 export function MenuList({
@@ -25,7 +25,7 @@ export function MenuList({
         <div className="text-lg font-semibold text-gray-700 mb-2">沒有菜單項目</div>
         <p className="text-sm text-gray-500">無法找到菜單數據，請重新上傳</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -44,5 +44,5 @@ export function MenuList({
         />
       ))}
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react';
 
 /**
  * Upload state type definition
@@ -8,34 +8,34 @@ import { useState, useCallback } from 'react'
  * - success: Upload completed successfully
  * - error: Upload failed
  */
-type UploadState = 'idle' | 'compressing' | 'uploading' | 'success' | 'error'
+type UploadState = 'idle' | 'compressing' | 'uploading' | 'success' | 'error';
 
 /**
  * Return type for useMenuUploadState hook
  */
 interface MenuUploadStateResult {
   // State
-  state: UploadState
-  error: string | null
-  progress: number
-  isLoading: boolean
+  state: UploadState;
+  error: string | null;
+  progress: number;
+  isLoading: boolean;
 
   // State transition methods
-  startCompression: () => void
-  startUploading: () => void
-  completeSuccess: () => void
-  setError: (error: string) => void
-  reset: () => void
+  startCompression: () => void;
+  startUploading: () => void;
+  completeSuccess: () => void;
+  setError: (error: string) => void;
+  reset: () => void;
 
   // Progress management
-  setProgress: (progress: number) => void
+  setProgress: (progress: number) => void;
 
   // State query helpers
-  isIdle: boolean
-  isCompressing: boolean
-  isUploading: boolean
-  isSuccess: boolean
-  isError: boolean
+  isIdle: boolean;
+  isCompressing: boolean;
+  isUploading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
 }
 
 /**
@@ -57,46 +57,46 @@ interface MenuUploadStateResult {
  * }
  */
 export function useMenuUploadState(): MenuUploadStateResult {
-  const [state, setState] = useState<UploadState>('idle')
-  const [error, setErrorState] = useState<string | null>(null)
-  const [progress, setProgressState] = useState(0)
+  const [state, setState] = useState<UploadState>('idle');
+  const [error, setErrorState] = useState<string | null>(null);
+  const [progress, setProgressState] = useState(0);
 
   const startCompression = useCallback(() => {
-    setState('compressing')
-    setErrorState(null)
-    setProgressState(0)
-  }, [])
+    setState('compressing');
+    setErrorState(null);
+    setProgressState(0);
+  }, []);
 
   const startUploading = useCallback(() => {
-    setState('uploading')
-    setErrorState(null)
-  }, [])
+    setState('uploading');
+    setErrorState(null);
+  }, []);
 
   const completeSuccess = useCallback(() => {
-    setState('success')
-    setErrorState(null)
-    setProgressState(100)
-  }, [])
+    setState('success');
+    setErrorState(null);
+    setProgressState(100);
+  }, []);
 
   const setError = useCallback((error: string) => {
-    setState('error')
-    setErrorState(error)
-    setProgressState(0)
-  }, [])
+    setState('error');
+    setErrorState(error);
+    setProgressState(0);
+  }, []);
 
   const reset = useCallback(() => {
-    setState('idle')
-    setErrorState(null)
-    setProgressState(0)
-  }, [])
+    setState('idle');
+    setErrorState(null);
+    setProgressState(0);
+  }, []);
 
   const setProgress = useCallback((newProgress: number) => {
     // Clamp progress between 0 and 100
-    const clampedProgress = Math.min(Math.max(newProgress, 0), 100)
-    setProgressState(clampedProgress)
-  }, [])
+    const clampedProgress = Math.min(Math.max(newProgress, 0), 100);
+    setProgressState(clampedProgress);
+  }, []);
 
-  const isLoading = state === 'compressing' || state === 'uploading'
+  const isLoading = state === 'compressing' || state === 'uploading';
 
   return {
     // State
@@ -119,5 +119,5 @@ export function useMenuUploadState(): MenuUploadStateResult {
     isUploading: state === 'uploading',
     isSuccess: state === 'success',
     isError: state === 'error',
-  }
+  };
 }

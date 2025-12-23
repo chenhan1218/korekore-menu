@@ -9,12 +9,12 @@
  * Framework-agnostic: Pure business logic
  */
 
-import { MenuItem, MenuData, createMenuData } from '../entities'
-import { GeminiPort } from '../ports'
-import { AppError, ErrorCode } from '@/shared/types'
+import { MenuItem, MenuData, createMenuData } from '../entities';
+import { GeminiPort } from '../ports';
+import { AppError, ErrorCode } from '@/shared/types';
 
 export interface ParseMenuImageUseCase {
-  execute(imageBase64: string, language?: 'zh_TW' | 'en'): Promise<MenuData>
+  execute(imageBase64: string, language?: 'zh_TW' | 'en'): Promise<MenuData>;
 }
 
 /**
@@ -43,7 +43,7 @@ export const createParseMenuImageUseCase = (
           'Image data is empty',
           '圖片數據無效，請重試',
           false
-        )
+        );
       }
 
       if (!language || !['zh_TW', 'en'].includes(language)) {
@@ -52,12 +52,12 @@ export const createParseMenuImageUseCase = (
           `Invalid language: ${language}`,
           '語言設置無效',
           false
-        )
+        );
       }
 
       try {
         // Call Gemini API via port (abstracted dependency)
-        const items: MenuItem[] = await geminiPort.parseImage(imageBase64, language)
+        const items: MenuItem[] = await geminiPort.parseImage(imageBase64, language);
 
         // Validate response
         if (!Array.isArray(items) || items.length === 0) {
@@ -66,7 +66,7 @@ export const createParseMenuImageUseCase = (
             'No menu items found in image',
             'AI 無法識別菜單，請嘗試其他圖片',
             true
-          )
+          );
         }
 
         // Create MenuData entity
@@ -78,13 +78,13 @@ export const createParseMenuImageUseCase = (
           new Date(),
           undefined,
           0.95 // Default confidence for initial parse
-        )
+        );
 
-        return menuData
+        return menuData;
       } catch (error) {
         // Handle known errors
         if (error instanceof AppError) {
-          throw error
+          throw error;
         }
 
         // Wrap unknown errors
@@ -93,8 +93,8 @@ export const createParseMenuImageUseCase = (
           error instanceof Error ? error.message : String(error),
           'AI 服務暫時不可用，請稍後重試',
           true
-        )
+        );
       }
     },
-  }
-}
+  };
+};
