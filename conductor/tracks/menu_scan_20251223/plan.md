@@ -88,14 +88,14 @@
 
 此階段目標：實現菜單卡片展示，支援規格選擇和勾選功能。
 
-- [~] Task: 實現菜單項目卡片組件 (`MenuItemCard`)
-  - [ ] Write tests: 驗證菜項信息正確展示
-  - [ ] Implement: 在 `src/ui/components/MenuItemCard.tsx` 中建立組件
-  - [ ] 測試應涵蓋：
-    - 菜名、中文翻譯正確顯示
-    - 規格選項和對應價格正確展示
-    - 「稅込」或「稅拔」標籤清楚顯示
-    - UI 在不同螢幕尺寸上可讀
+- [x] Task: 實現菜單項目卡片組件 (`MenuItemCard`) [913a58d]
+  - [x] Write tests: 驗證菜項信息正確展示 (9 tests passed)
+  - [x] Implement: 在 `src/ui/components/MenuItemCard.tsx` 中建立組件
+  - [x] 測試應涵蓋：
+    - 菜名、中文翻譯正確顯示 ✓
+    - 規格選項和對應價格正確展示 ✓
+    - 「稅込」或「稅拔」標籤清楚顯示 ✓
+    - UI 在不同螢幕尺寸上可讀 ✓
 
 - [ ] Task: 實現菜單清單組件 (`MenuList`)
   - [ ] Write tests: 驗證 20 個菜項卡片正確渲染
