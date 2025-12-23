@@ -5,7 +5,8 @@
       "Bash(wc:*)",
       "Bash(cat:*)",
       "Bash(npm install:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(npm run type-check:*)"
     ]
   }
 }
