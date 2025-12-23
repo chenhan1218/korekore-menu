@@ -1,20 +1,25 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HomePage } from '@/ui/pages/HomePage'
+import { MenuScanPage } from '@/ui/pages/MenuScanPage'
 
 /**
  * Main application component
  *
  * This is the root component of the KoreKore application.
  * It sets up routing and global layout.
+ *
+ * Routes:
+ * - / : HomePage - Landing page with prominent upload button
+ * - /menu-scan : MenuScanPage - Complete menu scanning workflow
  */
 const App: React.FC = () => {
   return (
     <Router>
       <div className="min-h-screen bg-background">
-        {/* TODO: Add layout wrapper with header/navigation */}
         <Routes>
-          {/* TODO: Add routes */}
-          <Route path="/" element={<div>Welcome to KoreKore</div>} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/menu-scan" element={<MenuScanPage />} />
         </Routes>
       </div>
     </Router>
