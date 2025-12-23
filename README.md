@@ -112,42 +112,57 @@ korekore-menu/
 │   └── DECISIONS.md              # 架構決策記錄 (ADR)
 │
 ├── src/
-│   ├── features/                 # 功能模塊（按業務場景組織）
-│   │   ├── menu-scan/           # 菜單掃描功能
-│   │   ├── ai-processing/       # AI 解析功能
-│   │   ├── ordering/            # 點餐介面
-│   │   └── order-card/          # 點餐卡生成
+│   ├── domain/                   # 業務邏輯層（Clean Architecture）
+│   │   ├── menuScan.ts          # 菜單掃描業務邏輯
+│   │   ├── stores/              # Zustand 狀態管理
+│   │   │   ├── menuStore.ts     # 菜單狀態 store
+│   │   │   └── orderStore.ts    # 點餐狀態 store
+│   │   └── __tests__/           # 業務邏輯單元測試
 │   │
-│   ├── services/                 # 外部服務整合層
+│   ├── infrastructure/           # 基礎設施層（外部服務整合）
+│   │   ├── mockMenuService.ts   # Mock 菜單數據服務
 │   │   ├── geminiService.ts     # Gemini API 調用
 │   │   ├── firebaseService.ts   # Firebase 操作
-│   │   └── storageService.ts    # 本機存儲操作
+│   │   └── __tests__/           # 基礎設施單元測試
 │   │
-│   ├── components/               # 可複用 UI 元件
-│   │   ├── common/              # 通用元件 (Button, Modal, etc)
-│   │   ├── layout/              # 佈局元件
-│   │   └── features/            # 功能特定元件
+│   ├── ui/                       # 用戶界面層（React 組件）
+│   │   ├── components/           # 可複用 UI 元件
+│   │   │   ├── common/          # 通用元件 (Button, Modal, etc)
+│   │   │   ├── layout/          # 佈局元件
+│   │   │   ├── MenuUploadInput.tsx
+│   │   │   ├── MenuItemCard.tsx
+│   │   │   ├── MenuList.tsx
+│   │   │   └── __tests__/
+│   │   ├── pages/                # 頁面層級元件
+│   │   │   ├── MenuScanPage.tsx
+│   │   │   ├── OrderingPage.tsx
+│   │   │   └── __tests__/
+│   │   └── hooks/                # 自訂 React Hooks
 │   │
 │   ├── types/                    # TypeScript 類型定義
 │   │   ├── menu.ts              # 菜單相關類型
+│   │   ├── order.ts             # 訂單相關類型
 │   │   ├── api.ts               # API 請求/回應類型
 │   │   └── index.ts             # 統一導出
 │   │
-│   ├── utils/                    # 工具函數
-│   │   ├── imageProcessing.ts   # 圖片處理
+│   ├── shared/                   # 共享工具函數
+│   │   ├── imageCompression.ts  # 圖片壓縮工具
 │   │   ├── i18n.ts              # 多語系管理
-│   │   └── errorHandler.ts      # 統一錯誤處理
+│   │   ├── errorHandler.ts      # 統一錯誤處理
+│   │   └── __tests__/           # 工具函數單元測試
 │   │
-│   ├── pages/                    # 頁面層級元件
-│   ├── hooks/                    # 自訂 React Hooks
-│   ├── store/                    # 狀態管理
 │   ├── App.tsx                  # 應用入口
 │   └── main.tsx                 # 應用啟動文件
 │
-├── tests/                        # 測試文件
-│   ├── unit/                    # 單元測試
-│   ├── integration/             # 集成測試
+├── tests/                        # 集成和端對端測試
+│   ├── integration/             # 集成測試（跨層測試）
 │   └── e2e/                     # 端對端測試
+│
+│   **注**：單元測試放在各層的 `__tests__/` 目錄中
+│   - `src/domain/__tests__/` - 業務邏輯測試
+│   - `src/infrastructure/__tests__/` - 基礎設施層測試
+│   - `src/ui/components/__tests__/` - 組件測試
+│   - `src/shared/__tests__/` - 工具函數測試
 │
 ├── public/                       # 靜態資源
 ├── CLAUDE.md                     # Claude Code 工作指引

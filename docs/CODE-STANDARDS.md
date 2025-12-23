@@ -204,60 +204,84 @@ uploadImage(file, (error, result) => {
 
 ## 檔案與目錄結構
 
-### 目錄組織原則
+### 目錄組織原則（Clean Architecture）
 
 ```
 src/
-├── features/              # 功能模塊（按業務場景）
-│   └── menu-scan/
-│       ├── components/    # 功能特定元件
-│       ├── hooks/         # 功能特定 Hooks
-│       ├── services/      # 功能特定服務（可選）
-│       ├── types/         # 功能特定類型
-│       └── index.ts       # 統一導出
+├── domain/                    # 業務邏輯層（框架無關）
+│   ├── menuScan.ts           # 菜單掃描業務邏輯
+│   ├── orderCard.ts          # 點餐卡生成邏輯
+│   ├── stores/               # Zustand 狀態管理
+│   │   ├── menuStore.ts      # 菜單狀態
+│   │   ├── orderStore.ts     # 訂單狀態
+│   │   └── index.ts
+│   ├── ports/                # 依賴接口（抽象層）
+│   │   ├── GeminiPort.ts     # Gemini API 接口
+│   │   ├── FirebasePort.ts   # Firebase 接口
+│   │   └── index.ts
+│   └── __tests__/            # 業務邏輯單元測試
+│       ├── menuScan.test.ts
+│       └── orderCard.test.ts
 │
-├── services/              # 跨功能的服務層
-│   ├── geminiService.ts
-│   ├── firebaseService.ts
-│   └── index.ts
+├── infrastructure/            # 基礎設施層（外部服務實現）
+│   ├── mockMenuService.ts    # Mock 菜單服務
+│   ├── geminiService.ts      # Gemini API 實現
+│   ├── firebaseService.ts    # Firebase 實現
+│   ├── adapters/             # Port 適配器實現
+│   │   ├── GeminiAdapter.ts
+│   │   └── FirebaseAdapter.ts
+│   └── __tests__/            # 基礎設施單元測試
+│       ├── mockMenuService.test.ts
+│       └── geminiService.test.ts
 │
-├── components/            # 可複用 UI 元件
-│   ├── common/            # 通用元件
-│   ├── layout/
-│   └── index.ts
+├── ui/                        # 用戶界面層（React）
+│   ├── components/            # UI 組件
+│   │   ├── common/            # 通用組件
+│   │   │   ├── Button.tsx
+│   │   │   ├── Modal.tsx
+│   │   │   └── __tests__/
+│   │   ├── layout/            # 佈局組件
+│   │   │   ├── Header.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   └── __tests__/
+│   │   ├── MenuUploadInput.tsx
+│   │   ├── MenuItemCard.tsx
+│   │   ├── MenuList.tsx
+│   │   └── __tests__/
+│   ├── pages/                 # 頁面組件
+│   │   ├── MenuScanPage.tsx
+│   │   ├── OrderingPage.tsx
+│   │   └── __tests__/
+│   ├── hooks/                 # 自訂 React Hooks
+│   │   ├── useMenuScan.ts
+│   │   ├── useOrdering.ts
+│   │   └── __tests__/
+│   ├── App.tsx
+│   └── main.tsx
 │
-├── types/                 # 全局 TypeScript 類型
-│   ├── menu.ts
-│   ├── api.ts
-│   ├── error.ts
-│   └── index.ts
+├── types/                     # 全局 TypeScript 類型定義
+│   ├── menu.ts               # 菜單類型
+│   ├── order.ts              # 訂單類型
+│   ├── api.ts                # API 請求/回應類型
+│   ├── error.ts              # 錯誤類型
+│   └── index.ts              # 統一導出
 │
-├── utils/                 # 工具函數
-│   ├── imageProcessing.ts
-│   ├── i18n.ts
-│   ├── errorHandler.ts
-│   └── index.ts
+├── shared/                    # 共享工具函數
+│   ├── imageCompression.ts   # 圖片壓縮工具
+│   ├── i18n.ts               # 多語系管理
+│   ├── errorHandler.ts       # 統一錯誤處理
+│   └── __tests__/            # 工具單元測試
 │
-├── hooks/                 # 全局自訂 Hooks
-│   ├── useAsyncOperation.ts
-│   └── index.ts
-│
-├── store/                 # 狀態管理
-│   ├── appStore.ts
-│   └── index.ts
-│
-├── pages/                 # 頁面層級元件
-│   ├── HomePage.tsx
-│   ├── MenuDetailPage.tsx
-│   └── index.ts
-│
-├── config/                # 配置文件
-│   ├── environment.ts
-│   └── constants.ts
-│
-├── App.tsx
-└── main.tsx
+├── App.tsx                    # React 應用入口
+└── main.tsx                   # 應用啟動文件
 ```
+
+**設計理念：**
+- **Domain**：純業務邏輯，框架無關，易於測試
+- **Infrastructure**：實現 Domain Ports，調用外部服務（Gemini、Firebase）
+- **UI**：React 組件層，通過 Hooks 連接 Domain 邏輯
+- **Types**：共享的 TypeScript 類型定義
+- **Shared**：通用工具函數
 
 ### 檔案命名規則
 

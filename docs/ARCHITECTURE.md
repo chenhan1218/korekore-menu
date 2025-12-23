@@ -297,42 +297,42 @@ export class GeminiAdapter implements GeminiPort {
 - 管理 UI 狀態（Zustand）
 - **可完全替換（React → Vue → Svelte）**
 
-**目錄結構（React 例子）：**
+**目錄結構（React 實現）：**
 ```
-src/ui/react/
+src/ui/
 ├── components/                  # UI 組件
 │   ├── common/                 # 通用組件
 │   │   ├── Button.tsx
 │   │   ├── Modal.tsx
 │   │   └── LoadingSpinner.tsx
-│   ├── features/               # 功能組件
-│   │   ├── MenuScanForm.tsx
-│   │   ├── MenuCardList.tsx
-│   │   ├── OrderCardDisplay.tsx
-│   │   └── MenuGallery.tsx
-│   └── layout/                 # 佈局組件
-│       ├── Header.tsx
-│       ├── Footer.tsx
-│       └── MainLayout.tsx
+│   ├── layout/                 # 佈局組件
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   └── MainLayout.tsx
+│   ├── MenuUploadInput.tsx      # 菜單掃描相關組件
+│   ├── MenuItemCard.tsx
+│   ├── MenuList.tsx
+│   └── __tests__/              # 組件單元測試
+│       ├── MenuUploadInput.test.tsx
+│       └── ...
 │
-├── adapters/                    # Domain → React 的適配層
-│   ├── useParseMenu.ts         # Hook 包裹 parseMenuImageUseCase
-│   ├── useSaveMenu.ts
-│   ├── useMenuHistory.ts
-│   └── useOrderCard.ts
-│
-├── stores/                      # Zustand stores
-│   ├── appStore.ts             # 全局應用狀態
-│   ├── menuStore.ts            # 菜單相關狀態
-│   └── index.ts
+├── hooks/                       # 自訂 React Hooks
+│   ├── useMenuScan.ts          # 菜單掃描 Hook
+│   ├── useOrdering.ts
+│   └── __tests__/
 │
 ├── pages/                       # 頁面組件
-│   ├── HomePage.tsx
-│   ├── MenuDetailPage.tsx
-│   └── HistoryPage.tsx
+│   ├── MenuScanPage.tsx
+│   ├── OrderingPage.tsx
+│   ├── HistoryPage.tsx
+│   └── __tests__/              # 頁面整合測試
+│       ├── MenuScanPage.integration.test.tsx
+│       └── ...
 │
 ├── App.tsx                      # React 應用入口
-└── index.tsx                    # React DOM 渲染
+└── main.tsx                     # React DOM 渲染
+
+**注**：狀態管理（Zustand stores）位於 src/domain/stores/
 ```
 
 **核心特徵：**

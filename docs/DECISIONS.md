@@ -69,25 +69,33 @@ KoreKore 的狀態管理需求相對簡單，需要在 boilerplate 少、易學�
 5. **DevTools 支援：** 有 Redux DevTools 集成選項
 
 ### 結果
-- 使用 Zustand 4.x 進行全局狀態管理
-- Store 分離：`appStore.ts` (全局) + 各功能的 Hook (局部)
+- 使用 Zustand 4.x 進行狀態管理
+- Store 位於 Domain 層：`src/domain/stores/`
+- Store 分離：`menuStore.ts` (菜單狀態) + `orderStore.ts` (訂單狀態) 等
 
 ### 參考實現
 ```typescript
-// src/store/appStore.ts
+// src/domain/stores/menuStore.ts
 import { create } from 'zustand'
 
-export const useAppStore = create((set, get) => ({
+export const useMenuStore = create((set, get) => ({
   menus: [],
   selectedItems: [],
+  currentMenu: null,
 
   actions: {
     addMenu: (menu) => set(state => ({
       menus: [...state.menus, menu]
-    }))
+    })),
+    selectItems: (items) => set({ selectedItems: items })
   }
 }))
+
+// 在 UI 組件中使用
+// const { menus, actions } = useMenuStore()
 ```
+
+**注**：雖然 Zustand store 可視為業務邏輯的一部分（UI 狀態管理），但它基於業務需求，因此放在 `domain/stores/` 層。
 
 ---
 
