@@ -23,3 +23,19 @@
 ## 架構原則
 * **Serverless 優先:** 盡可能利用 Firebase 與 Vercel 的 Serverless 特性，降低維運成本。
 * **模組化設計:** UI 組件與業務邏輯分離，提高程式碼的可重用性。
+
+---
+
+## 版本與依賴注記 (2025-12-23)
+
+### Firebase 集成計畫
+* **當前狀態:** Firebase 依賴已安裝（v10.14.1）但代碼中未使用
+* **構建配置:** vite.config.ts 中已移除 Firebase 的 optimizeDeps 配置，避免 CommonJS 兼容性問題
+* **未來集成:** 當需要 Firebase 功能時，應使用**子模塊導入**方式（如 `firebase/auth`、`firebase/firestore`）而非直接導入 'firebase' 包
+
+### 開發工具版本
+* **Vite:** v5.0.0 - 快速開發和生產構建
+* **TypeScript:** v5.3.3 - 嚴格型別檢查
+* **ESLint & Prettier:** 確保代碼品質和一致性
+* **Vitest:** v1.1.0 - 快速單元測試框架
+* **Node.js 環境:** 構建使用 jsdom 進行 DOM 測試環境模擬
