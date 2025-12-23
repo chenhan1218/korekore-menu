@@ -18,7 +18,7 @@ This file tracks all major work items. Each track has its own spec and plan.
 
 ---
 
-## [ ] Track: 修復 npm run build 錯誤
+## [~] Track: 修復 npm run build 錯誤
 
 *Link: [conductor/tracks/fix_npm_build_20251223/](conductor/tracks/fix_npm_build_20251223/)*
 
@@ -26,7 +26,7 @@ This file tracks all major work items. Each track has its own spec and plan.
 
 **優先級**：High
 
-**狀態**：新建立 | 待實施
+**狀態**：進行中 | 實施中
 
 ---
 
