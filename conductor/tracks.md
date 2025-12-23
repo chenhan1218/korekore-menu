@@ -18,11 +18,15 @@ This file tracks all major work items. Each track has its own spec and plan.
 
 ---
 
-## [ ] Track: 修復 npm run dev 錯誤
+## [ ] Track: 修復 npm run build 錯誤
 
-*Link: [conductor/tracks/fix_npm_dev_20251223/](conductor/tracks/fix_npm_dev_20251223/)*
+*Link: [conductor/tracks/fix_npm_build_20251223/](conductor/tracks/fix_npm_build_20251223/)*
 
-**描述**：修復 Firebase 與 Vite 的兼容性問題，使 `npm run dev` 能正常啟動開發服務器。
+**描述**：修復 Firebase 與 Vite 的兼容性問題，使 `npm run build` 能正常啟動生產環境構建。
+
+**優先級**：High
+
+**狀態**：新建立 | 待實施
 
 ---
 

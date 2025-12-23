@@ -1,0 +1,10 @@
+{
+  "track_id": "fix_npm_build_20251223",
+  "type": "bug",
+  "status": "new",
+  "priority": "high",
+  "created_at": "2025-12-23",
+  "description": "修復 Firebase 與 Vite 的兼容性問題，使 npm run build 能正常執行並產生生產環境構建檔案",
+  "error_message": "[commonjs--resolver] Failed to resolve entry for package \"firebase\". The package may have incorrect main/module/exports specified in its package.json: Missing \".\" specifier in \"firebase\" package",
+  "affected_command": "npm run build"
+}
